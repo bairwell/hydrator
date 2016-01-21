@@ -1,9 +1,13 @@
 <?php
 /**
  * Hydrator.
+ *
  * Used to hydrate objects from a variety of sources using Doctrine annotations.
+ *
  * Project homepage: https://github.com/bairwell/hydrator
+ *
  * (c) Richard Bairwell <richard@bairwell.com> of Bairwell Ltd http://bairwell.com
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -25,13 +29,14 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
 /**
  * Class Hydrator.
  * Used to hydrate objects from a variety of sources using Doctrine annotations.
  */
-class Hydrator
+class Hydrator implements LoggerAwareInterface
 {
 
     /**
@@ -40,12 +45,14 @@ class Hydrator
      * @var array $sources
      */
     protected $sources = [];
+
     /**
      * An array of callables which can be used as conditional checks.
      *
      * @var array $conditions
      */
     protected $conditionals = [];
+
     /**
      * The annotation reader system.
      *
@@ -109,6 +116,16 @@ class Hydrator
         $this->cacheExpiresAfter = $cacheExpiresAfter;
     }//end __construct()
 
+    /**
+     * Sets the logger.
+     *
+     * @param LoggerInterface $logger Logger to set.
+     *
+     * @return null
+     */
+    public function setLogger(LoggerInterface $logger) {
+        $this->logger=$logger;
+    }
 
     /**
      * Add a hydration source.
@@ -344,6 +361,12 @@ class Hydrator
         $conditions = $this->validateConditions($from->conditions, $className.'::$'.$propertyName);
         $fromField  = $from->field;
         if (true === empty($fromField)) {
+            if (null!==$this->logger) {
+                $this->logger->debug(
+                    'No from field set for {className}::{propertyName} - using property name',
+                    ['className' => $className, 'propertyName' => $propertyName]
+                );
+            }
             $fromField = $propertyName;
         }
 
@@ -357,6 +380,12 @@ class Hydrator
 
             // they aren't, so let's just return.
             if (false === call_user_func($this->conditionals[$condition])) {
+                if (null!==$this->logger) {
+                    $this->logger->debug(
+                        'Conditional {condition} returned false - not setting {className}::{propertyName}',
+                        ['condition'=>$condition,'className' => $className, 'propertyName' => $propertyName]
+                    );
+                }
                 return $object;
             }
         }
@@ -369,29 +398,29 @@ class Hydrator
                 );
             }
 
-            $data = call_user_func($this->sources[$source], $fromField);
-            if (null !== $data) {
-                if (false === $property->hasCastAs()) {
-                    $currentValue = $data;
-                } else {
-                    $castAs   = $property->getCastAs();
-                    $newValue = $castAs->cast($data);
-                    if (true === $castAs->hasErrored()) {
-                        $failure = new Failure();
-                        $failure->setInputField($fromField)
-                            ->setInputValue($data)
-                            ->setMessage($castAs->getErrorMessage())
-                            ->setTokens($castAs->getErrorTokens())
-                            ->setSource($source);
-                        $failureList->add($failure);
-                    } else {
-                        $currentValue = $newValue;
-                    }
-                }
-            }
+            $currentValue=$this->hydrateSinglePropertyViaSource(
+                $currentValue,
+                $source,
+                $fromField,
+                $property,
+                $failureList
+            );
         }//end foreach
         if (null !== $currentValue) {
             $object->$propertyName = $currentValue;
+            if (null!==$this->logger) {
+                $this->logger->debug(
+                    'Setting value for {className}::{propertyName} - type {type} value {value}',
+                    ['className' => $className, 'propertyName' => $propertyName,'type'=>gettype($currentValue),'value'=>$currentValue]
+                );
+            }
+        } else {
+            if (null!==$this->logger) {
+                $this->logger->debug(
+                    'Did not find a value for {className}::{propertyName}',
+                    ['className' => $className, 'propertyName' => $propertyName]
+                );
+            }
         }
 
         return $object;
@@ -480,7 +509,6 @@ class Hydrator
         return true;
     }//end saveToCache()
 
-
     /**
      * Get a "CachedClass" object for a specified object - reading from our cache if possible, if not
      * we'll build the data.
@@ -524,7 +552,6 @@ class Hydrator
         return $cachedClass;
     }//end getCachedClassForObject()
 
-
     /**
      * Parse a property.
      *
@@ -540,7 +567,8 @@ class Hydrator
     ) : CachedClass
     {
         $propertyName       = $property->getName();
-        $declaringClassName = $property->getDeclaringClass()->getName();
+        $declaringClassName = $property->getDeclaringClass()
+            ->getName();
         $castAs             = null;
         $froms              = [];
         $annotations        = $this->getAnnotationReader()
@@ -584,7 +612,6 @@ class Hydrator
         return $cachedClass;
     }//end parseProperty()
 
-
     /**
      * Validate the conditions of a hydrate from.
      *
@@ -623,7 +650,6 @@ class Hydrator
         return $returnConditions;
     }//end validateConditions()
 
-
     /**
      * Validate the sources of a hydrate from.
      *
@@ -660,7 +686,6 @@ class Hydrator
         return $returnSources;
     }//end validateSources()
 
-
     /**
      * Standardise a string. Convers XyZ_abc-def to xyzAbcDef.
      *
@@ -683,4 +708,47 @@ class Hydrator
 
         return $string;
     }//end standardiseString()
+
+    /**
+     * Hydrate a single property via single source.
+     *
+     * @param mixed          $currentValue Current value of the property.
+     * @param string         $source       Which source we are using.
+     * @param string         $fromField    Which field should we be reading from.
+     * @param CachedProperty $property     The property we are working on.
+     * @param FailureList    $failureList  Referenced list of failures.
+     *
+     * @return mixed The new value.
+     */
+    private function hydrateSinglePropertyViaSource(
+        $currentValue,
+        string $source,
+        string $fromField,
+        CachedProperty $property,
+        FailureList &$failureList
+    )
+    {
+        $data = call_user_func($this->sources[$source], $fromField);
+        if (null !== $data) {
+            if (false === $property->hasCastAs()) {
+                $currentValue = $data;
+            } else {
+                $castAs   = $property->getCastAs();
+                $newValue = $castAs->cast($data);
+                if (true === $castAs->hasErrored()) {
+                    $failure = new Failure();
+                    $failure->setInputField($fromField)
+                        ->setInputValue($data)
+                        ->setMessage($castAs->getErrorMessage())
+                        ->setTokens($castAs->getErrorTokens())
+                        ->setSource($source);
+                    $failureList->add($failure);
+                } else {
+                    $currentValue = $newValue;
+                }
+            }
+        }
+
+        return $currentValue;
+    }//end hydrateSinglePropertyViaSource()
 }//end class

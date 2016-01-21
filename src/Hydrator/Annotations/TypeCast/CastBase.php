@@ -52,12 +52,14 @@ abstract class CastBase
 
     /**
      * Last error encountered.
+     *
      * @var string|null
      */
     private $lastError = null;
 
     /**
      * Tokens for the last error (if any).
+     *
      * @var array
      */
     private $lastErrorTokens = [];
@@ -149,6 +151,7 @@ abstract class CastBase
 
     /**
      * Get the error message tokens which should correspond with the failure message.
+     *
      * @return array
      */
     final public function getErrorTokens() : array

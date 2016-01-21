@@ -181,6 +181,8 @@
         <!-- can be a pain with type hinting -->
         <exclude name="Squiz.Commenting.BlockComment.SingleLine"/>
         <exclude name="Squiz.PHP.CommentedOutCode.Found"/>
+        <!-- conflicts with Doctrine annotations -->
+        <exclude name="Squiz.Commenting.VariableComment.TagNotAllowed"/>
     </rule>
 
 </ruleset>

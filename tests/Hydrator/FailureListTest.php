@@ -95,58 +95,100 @@ class FailureListTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      * @uses \Bairwell\Hydrator\FailureList::__construct
-     * @uses \Bairwell\Hydrator\FailureList::getName
-     * @covers \Bairwell\Hydrator\CachedClass::offsetGet
-     * @covers \Bairwell\Hydrator\CachedClass::offsetSet
-     * @uses \Bairwell\Hydrator\CachedClass::count
-     * @covers \Bairwell\Hydrator\CachedClass::offsetUnset
-     * @covers \Bairwell\Hydrator\CachedClass::offsetExists
-     * @uses \Bairwell\Hydrator\CachedClass::add
+     * @covers \Bairwell\Hydrator\FailureList::offsetGet
+     * @covers \Bairwell\Hydrator\FailureList::offsetSet
+     * @uses \Bairwell\Hydrator\FailureList::count
+     * @covers \Bairwell\Hydrator\FailureList::offsetUnset
+     * @covers \Bairwell\Hydrator\FailureList::offsetExists
+     * @uses \Bairwell\Hydrator\FailureList::add
      */
-    public function testCachedClassOffsetExceptions()
+    public function testOffsetExceptions()
     {
-        $sut = new CachedClass('test2');
-        $this->assertEquals('test2', $sut->getName());
+        $sut=new FailureList();
         $this->assertEquals(0, $sut->count());
-        $this->assertFalse($sut->offsetExists('abc'));
+        $this->assertFalse($sut->offsetExists(3));
         try {
-            $sut->offsetExists(123);
+            $sut->offsetExists('abc');
             $this->fail('Expected exception');
         } catch (\TypeError $e) {
-            $this->assertEquals('Offset must be a propertyName string', $e->getMessage());
+            $this->assertEquals('Offset must be an integer', $e->getMessage());
         }
-        $this->assertNull($sut->offsetGet('abc'));
+        $this->assertNull($sut->offsetGet(3));
         try {
-            $sut->offsetGet(123);
+            $sut->offsetGet('abc');
             $this->fail('Expected exception');
         } catch (\TypeError $e) {
-            $this->assertEquals('Offset must be a propertyName string', $e->getMessage());
+            $this->assertEquals('Offset must be an integer', $e->getMessage());
         }
-        $hydrateFrom    = new HydrateFrom();
-        $storedProperty = new CachedProperty('test2', 'abc', $hydrateFrom);
-        try {
-            $sut->offsetSet(123, 123);
-            $this->fail('Expected exception');
-        } catch (\TypeError $e) {
-            $this->assertEquals('Offset must be a propertyName string', $e->getMessage());
-        }
+        /* @var Failure $failure */
+        $failure=$this->getMockBuilder('\Bairwell\Hydrator\Failure')->disableOriginalConstructor()->getMock();
+        $sut->add($failure);
         try {
             $sut->offsetSet('abc', 123);
             $this->fail('Expected exception');
         } catch (\TypeError $e) {
-            $this->assertEquals('Value must be a CachedProperty: got integer', $e->getMessage());
+            $this->assertEquals('Offset must be an integer', $e->getMessage());
+        }
+        try {
+            $sut->offsetSet(123, 123);
+            $this->fail('Expected exception');
+        } catch (\TypeError $e) {
+            $this->assertEquals('Value must be an instance of Failure: got integer', $e->getMessage());
         }
         try {
             $std = new \stdClass();
-            $sut->offsetSet('abc', $std);
+            $sut->offsetSet(123, $std);
             $this->fail('Expected exception');
         } catch (\TypeError $e) {
-            $this->assertEquals('Value must be a CachedProperty: got object stdClass', $e->getMessage());
+            $this->assertEquals('Value must be an instance of Failure: got object stdClass', $e->getMessage());
         }
         try {
-            $sut->offsetUnset(123);
+            $sut->offsetUnset('abc');
         } catch (\TypeError $e) {
-            $this->assertEquals('Offset must be a propertyName string',$e->getMessage());
+            $this->assertEquals('Offset must be an integer',$e->getMessage());
         }
     }
+
+
+    /**
+     * Tests the offsets.
+     *
+     * @test
+     * @uses \Bairwell\Hydrator\FailureList::__construct
+     * @covers \Bairwell\Hydrator\FailureList::offsetGet
+     * @covers \Bairwell\Hydrator\FailureList::offsetSet
+     * @covers \Bairwell\Hydrator\FailureList::count
+     * @covers \Bairwell\Hydrator\FailureList::offsetUnset
+     * @covers \Bairwell\Hydrator\FailureList::offsetExists
+     * @covers \Bairwell\Hydrator\FailureList::add
+     */
+    public function testOffset()
+    {
+        $sut = new FailureList();
+        /* @var Failure $failure */
+        $failure=$this->getMockBuilder('\Bairwell\Hydrator\Failure')->disableOriginalConstructor()->getMock();
+        $sut->add($failure);
+        $this->assertEquals(1,$sut->count());
+        $this->assertTrue($sut->offsetExists(0));
+        $this->assertFalse($sut->offsetExists(23));
+        $this->assertSame($failure,$sut->offsetGet(0));
+        // now add it in a set position
+        /* @var Failure $failure */
+        $failure2=$this->getMockBuilder('\Bairwell\Hydrator\Failure')->disableOriginalConstructor()->getMock();
+        $sut->offsetSet(23,$failure2);
+        $this->assertEquals(2,$sut->count());
+        $this->assertTrue($sut->offsetExists(0));
+        $this->assertTrue($sut->offsetExists(23));
+        $this->assertSame($failure,$sut->offsetGet(0));
+        $this->assertSame($failure2,$sut->offsetGet(23));
+
+        // unset test
+        $sut->offsetUnset(23);
+        $this->assertEquals(1,$sut->count());
+        $this->assertTrue($sut->offsetExists(0));
+        $this->assertFalse($sut->offsetExists(23));
+        $this->assertSame($failure,$sut->offsetGet(0));
+
+    }
+
 }

@@ -196,11 +196,18 @@ class FailureList implements \Iterator, \Countable, \ArrayAccess
     public function offsetSet($offset, $value)
     {
         if (false === is_int($offset)) {
-            throw new \TypeError('Offset must be an integer');
+            $error = new \TypeError('Offset must be an integer');
+            throw $error;
         }
 
         if (false === ($value instanceof Failure)) {
-            throw new \TypeError('Value must be an instance of Failure');
+            $message = 'Value must be an instance of Failure: got '.gettype($value);
+            if (true === is_object($value)) {
+                $message .= ' '.get_class($value);
+            }
+
+            $error = new \TypeError($message);
+            throw $error;
         }
 
         $this->failures[$offset] = $value;
