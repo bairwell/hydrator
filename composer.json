@@ -1,0 +1,33 @@
+{
+    "name": "bairwell/hydrator",
+    "description": "An annotation based Hydrator system",
+    "keywords": ["hydrator","hydration","annotations"],
+    "homepage": "https://github.com/bairwell/hydrator",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Richard Bairwell",
+            "email": "richard@bairwell.com",
+            "homepage": "http://www.bairwell.com"
+        }
+    ],
+    "type": "library",
+    "require": {
+        "php": ">=7.0.0",
+        "psr/http-message": "^1.0",
+        "psr/log": "^1.0",
+        "psr/cache": "^1.0",
+        "doctrine/annotations": "^1.2",
+        "doctrine/cache": "^1.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.0.9",
+        "squizlabs/php_codesniffer": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {"Bairwell\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Bairwell\\": "tests/"}
+    }
+}
