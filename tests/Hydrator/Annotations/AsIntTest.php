@@ -4,12 +4,12 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
  * Class AsIntTest.
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\AsInt
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\CastBase
+ * @uses \Bairwell\Hydrator\Annotations\AsInt
+ * @uses \Bairwell\Hydrator\Annotations\AsBase
  */
 class AsIntTest extends \PHPUnit_Framework_TestCase
 {
@@ -47,12 +47,12 @@ class AsIntTest extends \PHPUnit_Framework_TestCase
      * Testing inheritance.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsInt
+     * @covers \Bairwell\Hydrator\Annotations\AsInt
      */
     public function testConstructor() {
         $sut=new AsInt();
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\AsInt',$sut);
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\CastBase',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsInt',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsBase',$sut);
         $this->assertEquals(PHP_INT_MIN,$sut->min);
         $this->assertEquals(PHP_INT_MAX,$sut->max);
         $this->assertEquals(',',$sut->digitsSeparator);
@@ -61,7 +61,7 @@ class AsIntTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsInt::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsInt::cast
      */
     public function testCastDefaults()
     {
@@ -83,7 +83,7 @@ class AsIntTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsInt::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsInt::cast
      */
     public function testCastMinMax()
     {
@@ -108,7 +108,7 @@ class AsIntTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsInt::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsInt::cast
      */
     public function testCastMinMaxDefault()
     {
@@ -134,19 +134,19 @@ class AsIntTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsInt::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsInt::cast
      */
     public function testCastInvalidValue() {
         $sut=new AsInt();
         $this->assertFalse($sut->hasErrored());
         $this->assertEquals(4,$sut->cast([],4),'Cast with default provided');
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
+        $this->assertSame(AsBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
         //
         $this->assertNull($sut->cast(true),'Cast with no default');
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
+        $this->assertSame(AsBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
         // ensure it still works
         $this->assertEquals(27,$sut->cast(27,32));
@@ -156,35 +156,35 @@ class AsIntTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsInt::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsInt::cast
      */
     public function testCastNotANumber() {
         $sut=new AsInt();
         $this->assertFalse($sut->hasErrored());
         $this->assertNull($sut->cast('hello'));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::DECIMAL_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
+        $this->assertSame(AsBase::DECIMAL_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
     }
     /**
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsInt::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsInt::cast
      */
     public function testCastNotAnInt() {
         $sut=new AsInt();
         $this->assertFalse($sut->hasErrored());
         $this->assertNull($sut->cast(PHP_INT_MAX+PHP_INT_MAX));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::DECIMAL_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
+        $this->assertSame(AsBase::DECIMAL_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
     }
     /**
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsInt::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsInt::cast
      */
     public function testCastOutsideRange() {
         $sut=new AsInt();
@@ -193,7 +193,7 @@ class AsIntTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($sut->hasErrored());
         $this->assertNull($sut->cast(22));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::DECIMAL_OUTSIDE_ACCEPTABLE_RANGE,$sut->getErrorMessage());
+        $this->assertSame(AsBase::DECIMAL_OUTSIDE_ACCEPTABLE_RANGE,$sut->getErrorMessage());
         $this->assertEquals(['%min%'=>23,'%max%'=>30],$sut->getErrorTokens());
     }
 

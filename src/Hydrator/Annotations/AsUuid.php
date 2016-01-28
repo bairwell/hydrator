@@ -12,15 +12,15 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
- * Used to annotate items should be type cast to strings.
+ * Used to annotate items should be type cast to a stringed UUID.
  *
  * @Annotation
- * @Target({"PROPERTY"})
+ * @Target({"PROPERTY","ANNOTATION"})
  */
-final class AsString extends CastBase
+final class AsUuid extends AsBase
 {
     /**
      * Allow null
@@ -48,7 +48,21 @@ final class AsString extends CastBase
             return $defaultValue;
         }
 
-        $value = strval($value);
+        // remove dashes
+        $value = str_replace('-','',strtolower(strval($value)));
+
+        // remove anything else
+        $replaced=preg_replace('/[^0-9a-f]/','',$value);
+
+        if ($value!==$replaced) {
+            $this->setError(self::UUID_INVALID_CHARACTERS);
+            return $defaultValue;
+        }
+        if (32!==strlen($replaced)) {
+            $this->setError(self::UUID_WRONG_LENGTH);
+            return $defaultValue;
+        }
+        $value=substr($replaced,0,8).'-'.substr($replaced,8,4).'-'.substr($replaced,8+4,4).'-'.substr($replaced,8+4+4,4).'-'.substr($replaced,8+4+4+4,12);
         return $value;
     }//end doCast()
 }//end class

@@ -9,15 +9,15 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
  * Used to annotate items should be type cast to date time objects.
  *
  * @Annotation
- * @Target({"PROPERTY"})
+ * @Target({"PROPERTY","ANNOTATION"})
  */
-final class AsDateTime extends CastBase
+final class AsDateTime extends AsBase
 {
 
     /**

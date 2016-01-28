@@ -6,13 +6,13 @@ declare (strict_types = 1);
 
 namespace Bairwell\Hydrator;
 
-use \Bairwell\Hydrator\Annotations\HydrateFrom;
-use \Bairwell\Hydrator\Annotations\TypeCast\CastBase;
+use \Bairwell\Hydrator\Annotations\From;
+use \Bairwell\Hydrator\Annotations\AsBase;
 
 /**
  * Class CachedPropertyTest.
  * @uses \Bairwell\Hydrator\CachedProperty
- * @uses \Bairwell\Hydrator\Annotations\HydrateFrom
+ * @uses \Bairwell\Hydrator\Annotations\From
  */
 class CachedPropertyTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,20 +28,20 @@ class CachedPropertyTest extends \PHPUnit_Framework_TestCase
      * @covers \Bairwell\Hydrator\CachedProperty::setClassName
      */
     public function testConstructor() {
-        $hydrateFrom=new \Bairwell\Hydrator\Annotations\HydrateFrom();
-        /* @var CastBase $castBase */
-        $castBase=$this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\TypeCast\CastBase');
-        $sut=new CachedProperty('testClass','testingName',$hydrateFrom);
+        $from=new \Bairwell\Hydrator\Annotations\From();
+        /* @var AsBase $AsBase */
+        $AsBase=$this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\AsBase');
+        $sut=new CachedProperty('testClass','testingName',$from);
         $this->assertEquals('testClass',$sut->getClassName());
         $this->assertEquals('testingName',$sut->getName());
-        $this->assertSame($hydrateFrom,$sut->getFrom());
+        $this->assertSame($from,$sut->getFrom());
         $this->assertFalse($sut->hasCastAs());
-        $sut=new CachedProperty('test2Class','testing2Name',$hydrateFrom,$castBase);
+        $sut=new CachedProperty('test2Class','testing2Name',$from,$AsBase);
         $this->assertEquals('test2Class',$sut->getClassName());
         $this->assertEquals('testing2Name',$sut->getName());
-        $this->assertSame($hydrateFrom,$sut->getFrom());
+        $this->assertSame($from,$sut->getFrom());
         $this->assertTrue($sut->hasCastAs());
-        $this->assertSame($castBase,$sut->getCastAs());
+        $this->assertSame($AsBase,$sut->getCastAs());
         $this->assertSame($sut,$sut->setName('jeff'));
         $this->assertEquals('jeff',$sut->getName());
         $this->assertSame($sut,$sut->setClassName('thingy'));
@@ -59,17 +59,17 @@ class CachedPropertyTest extends \PHPUnit_Framework_TestCase
      */
     public function testCastAs()
     {
-        $hydrateFrom=new \Bairwell\Hydrator\Annotations\HydrateFrom();
-        /* @var CastBase $castBase */
-        $castBase = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\TypeCast\CastBase');
-        $sut      = new CachedProperty('testClassName','testingName', $hydrateFrom);
+        $from=new \Bairwell\Hydrator\Annotations\From();
+        /* @var AsBase $AsBase */
+        $AsBase = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\AsBase');
+        $sut      = new CachedProperty('testClassName','testingName', $from);
         $this->assertFalse($sut->hasCastAs());
-        $this->assertSame($sut,$sut->setCastAs($castBase));
+        $this->assertSame($sut,$sut->setCastAs($AsBase));
         $this->assertTrue($sut->hasCastAs());
-        $this->assertSame($castBase,$sut->getCastAs());
-        $sut      = new CachedProperty('testClassName','testingName', $hydrateFrom,$castBase);
+        $this->assertSame($AsBase,$sut->getCastAs());
+        $sut      = new CachedProperty('testClassName','testingName', $from,$AsBase);
         $this->assertTrue($sut->hasCastAs());
-        $this->assertSame($castBase,$sut->getCastAs());
+        $this->assertSame($AsBase,$sut->getCastAs());
     }
 
     /**
@@ -81,12 +81,12 @@ class CachedPropertyTest extends \PHPUnit_Framework_TestCase
      */
     public function testFrom()
     {
-        $hydrateFrom=new \Bairwell\Hydrator\Annotations\HydrateFrom();
-        $hydrateFromTwo =new \Bairwell\Hydrator\Annotations\HydrateFrom();
+        $from=new \Bairwell\Hydrator\Annotations\From();
+        $fromTwo =new \Bairwell\Hydrator\Annotations\From();
 
-        $sut      = new CachedProperty('testClassName','testingName', $hydrateFrom);
-        $this->assertSame($hydrateFrom,$sut->getFrom());
-        $this->assertSame($sut,$sut->setFrom($hydrateFromTwo));
-        $this->assertSame($hydrateFromTwo,$sut->getFrom());
+        $sut      = new CachedProperty('testClassName','testingName', $from);
+        $this->assertSame($from,$sut->getFrom());
+        $this->assertSame($sut,$sut->setFrom($fromTwo));
+        $this->assertSame($fromTwo,$sut->getFrom());
     }
 }

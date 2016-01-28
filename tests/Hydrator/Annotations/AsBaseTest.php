@@ -4,12 +4,12 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
- * Class CastBaseTest.
+ * Class AsBaseTest.
  */
-class CastBaseTest extends \PHPUnit_Framework_TestCase
+class AsBaseTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -19,7 +19,7 @@ class CastBaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckBasics()
     {
-        $class = new \ReflectionClass('\Bairwell\Hydrator\Annotations\TypeCast\CastBase');
+        $class = new \ReflectionClass('\Bairwell\Hydrator\Annotations\AsBase');
         $this->assertTrue($class->isAbstract());
         $this->assertTrue($class->hasProperty('allowNull'));
         $defaults = $class->getDefaultProperties();
@@ -41,7 +41,10 @@ class CastBaseTest extends \PHPUnit_Framework_TestCase
                                                   '%decimalSeparator% and the optional digits separator %digitsSeparator%',
             'DECIMAL_MUST_BE_ACCEPTED_FORMAT'  => 'Value must be a decimal using the optional digits '.
                                                   'separator %digitsSeparator%',
-            'DECIMAL_OUTSIDE_ACCEPTABLE_RANGE' => 'Decimal must be between %min% and %max%'
+            'DECIMAL_OUTSIDE_ACCEPTABLE_RANGE' => 'Decimal must be between %min% and %max%',
+                'UUID_INVALID_CHARACTERS' => 'Uuid contains invalid characters',
+
+    'UUID_WRONG_LENGTH' => 'Uuid is the wrong length'
         ];
         $constants         = $class->getConstants();
         $this->assertCount(
@@ -60,15 +63,15 @@ class CastBaseTest extends \PHPUnit_Framework_TestCase
      * Test the error system of the class.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\CastBase::setError
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\CastBase::hasErrored
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\CastBase::getErrorMessage
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\CastBase::getErrorTokens
+     * @covers \Bairwell\Hydrator\Annotations\AsBase::setError
+     * @covers \Bairwell\Hydrator\Annotations\AsBase::hasErrored
+     * @covers \Bairwell\Hydrator\Annotations\AsBase::getErrorMessage
+     * @covers \Bairwell\Hydrator\Annotations\AsBase::getErrorTokens
      */
     public function testError()
     {
-        /* @var \Bairwell\Hydrator\Annotations\TypeCast\CastBase $sut */
-        $sut = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\TypeCast\CastBase');
+        /* @var \Bairwell\Hydrator\Annotations\AsBase $sut */
+        $sut = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\AsBase');
         $this->assertFalse($sut->hasErrored());
         $this->assertInternalType('array', $sut->getErrorTokens());
         $this->assertEmpty($sut->getErrorTokens());
@@ -92,13 +95,13 @@ class CastBaseTest extends \PHPUnit_Framework_TestCase
      * Test the cast system of the class.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\CastBase::cast
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\CastBase::setError
+     * @covers \Bairwell\Hydrator\Annotations\AsBase::cast
+     * @uses   \Bairwell\Hydrator\Annotations\AsBase::setError
      */
     public function testCastInvalidNull()
     {
-        /* @var \Bairwell\Hydrator\Annotations\TypeCast\CastBase $sut */
-        $sut = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\TypeCast\CastBase');
+        /* @var \Bairwell\Hydrator\Annotations\AsBase $sut */
+        $sut = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\AsBase');
         // try with invalid null
         $sut->allowNull = 'abc';
         try {
@@ -113,13 +116,13 @@ class CastBaseTest extends \PHPUnit_Framework_TestCase
      * Test the cast system of the class.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\CastBase::cast
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\CastBase::setError
+     * @covers \Bairwell\Hydrator\Annotations\AsBase::cast
+     * @uses   \Bairwell\Hydrator\Annotations\AsBase::setError
      */
     public function testCastNullNotAllowed()
     {
-        /* @var \Bairwell\Hydrator\Annotations\TypeCast\CastBase $sut */
-        $sut            = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\TypeCast\CastBase');
+        /* @var \Bairwell\Hydrator\Annotations\AsBase $sut */
+        $sut            = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\AsBase');
         $sut->allowNull = false;
         try {
             $sut->cast('abc');
@@ -139,13 +142,13 @@ class CastBaseTest extends \PHPUnit_Framework_TestCase
      * Test the cast system of the class.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\CastBase::cast
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\CastBase::setError
+     * @covers \Bairwell\Hydrator\Annotations\AsBase::cast
+     * @uses   \Bairwell\Hydrator\Annotations\AsBase::setError
      */
     public function testCastNullWithNull()
     {
-        /* @var \Bairwell\Hydrator\Annotations\TypeCast\CastBase $sut */
-        $sut            = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\TypeCast\CastBase');
+        /* @var \Bairwell\Hydrator\Annotations\AsBase $sut */
+        $sut            = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\AsBase');
         $sut->allowNull = true;
         $this->assertNull($sut->cast(null));
         $this->assertNull($sut->cast(null, null));
@@ -155,17 +158,17 @@ class CastBaseTest extends \PHPUnit_Framework_TestCase
      * Test the cast system of the class.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\CastBase::cast
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\CastBase::setError
+     * @covers \Bairwell\Hydrator\Annotations\AsBase::cast
+     * @uses   \Bairwell\Hydrator\Annotations\AsBase::setError
      */
     public function testCast()
     {
-        $sut = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\TypeCast\CastBase');
+        $sut = $this->getMockForAbstractClass('\Bairwell\Hydrator\Annotations\AsBase');
         $sut->expects($this->any())
             ->method('doCast')
             ->withConsecutive(['a', null], ['b', null], ['c', 123])
             ->willReturnOnConsecutiveCalls('returnA', 'returnB', 'returnC');
-        /* @var \Bairwell\Hydrator\Annotations\TypeCast\CastBase $sut */
+        /* @var \Bairwell\Hydrator\Annotations\AsBase $sut */
         $sut->allowNull = true;
         $this->assertEquals('returnA', $sut->cast('a'));
         $this->assertEquals('returnB', $sut->cast('b', null));

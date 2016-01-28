@@ -7,12 +7,12 @@ declare (strict_types = 1);
 namespace Bairwell\Hydrator;
 
 use Bairwell\Hydrator\CachedProperty;
-use Bairwell\Hydrator\Annotations\HydrateFrom;
+use Bairwell\Hydrator\Annotations\From;
 
 /**
  * Class CachedClassTest.
  * @uses \Bairwell\Hydrator\CachedProperty
- * @uses \Bairwell\Hydrator\Annotations\HydrateFrom
+ * @uses \Bairwell\Hydrator\Annotations\From
  */
 class CachedClassTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,15 +46,15 @@ class CachedClassTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test2',$sut->getName());
         $this->assertEquals(0,$sut->count());
         $this->assertFalse($sut->offsetExists('abc'));
-        $hydrateFrom=new HydrateFrom();
-        $storedProperty=new CachedProperty('test2','abc',$hydrateFrom);
+        $from=new From();
+        $storedProperty=new CachedProperty('test2','abc',$from);
         $sut->add($storedProperty);
         $this->assertEquals(1,$sut->count());
         $this->assertTrue($sut->offsetExists('abc'));
         $this->assertInternalType('array',$sut->offsetGet('abc'));
         $this->assertCount(1,$sut->offsetGet('abc'));
         $this->assertEquals([$storedProperty],$sut->offsetGet('abc'));
-        $storedProperty2=new CachedProperty('test2','abc',$hydrateFrom);
+        $storedProperty2=new CachedProperty('test2','abc',$from);
         $sut->add($storedProperty2);
         $this->assertEquals(1,$sut->count());
         $this->assertTrue($sut->offsetExists('abc'));
@@ -65,7 +65,7 @@ class CachedClassTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([$storedProperty,$storedProperty2],$sut->get('abc'));
         $this->assertEquals([],$sut->get('stuff'));
         // error
-        $storedProperty3=new CachedProperty('tedsdsdsst2','abc',$hydrateFrom);
+        $storedProperty3=new CachedProperty('tedsdsdsst2','abc',$from);
         try {
             $sut->add($storedProperty3);
             $this->fail('Expected exception');
@@ -105,8 +105,8 @@ class CachedClassTest extends \PHPUnit_Framework_TestCase
         } catch (\TypeError $e) {
             $this->assertEquals('Offset must be a propertyName string', $e->getMessage());
         }
-        $hydrateFrom    = new HydrateFrom();
-        $storedProperty = new CachedProperty('test2', 'abc', $hydrateFrom);
+        $from    = new From();
+        $storedProperty = new CachedProperty('test2', 'abc', $from);
         try {
             $sut->offsetSet(123, 123);
             $this->fail('Expected exception');
@@ -151,8 +151,8 @@ class CachedClassTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test2', $sut->getName());
         $this->assertEquals(0, $sut->count());
         $this->assertFalse($sut->offsetExists('abc'));
-        $hydrateFrom    = new HydrateFrom();
-        $storedProperty = new CachedProperty('test2', 'abc', $hydrateFrom);
+        $from    = new From();
+        $storedProperty = new CachedProperty('test2', 'abc', $from);
         $sut->add($storedProperty);
         $this->assertEquals(1,$sut->count());
         $this->assertTrue($sut->offsetExists('abc'));
@@ -183,8 +183,8 @@ class CachedClassTest extends \PHPUnit_Framework_TestCase
     public function testCachedClassOffset()
     {
         $sut = new CachedClass('test2');
-        $hydrateFrom    = new HydrateFrom();
-        $storedProperty = new CachedProperty('test2', 'abc', $hydrateFrom);
+        $from    = new From();
+        $storedProperty = new CachedProperty('test2', 'abc', $from);
         $sut->add($storedProperty);
         $this->assertEquals(1,$sut->count());
         $this->assertTrue($sut->offsetExists('abc'));
@@ -192,7 +192,7 @@ class CachedClassTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1,$sut->offsetGet('abc'));
         $this->assertSame($storedProperty,$sut->offsetGet('abc')[0]);
         // add a second
-        $second=new CachedProperty('test2','abc',$hydrateFrom);
+        $second=new CachedProperty('test2','abc',$from);
         $sut->add($second);
         $this->assertEquals(1,$sut->count());
         $this->assertInternalType('array',$sut->offsetGet('abc'));
@@ -200,7 +200,7 @@ class CachedClassTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($storedProperty,$sut->offsetGet('abc')[0]);
         $this->assertSame($second,$sut->offsetGet('abc')[1]);
         // add a third with a different name
-        $third=new CachedProperty('test2','test',$hydrateFrom);
+        $third=new CachedProperty('test2','test',$from);
         $sut->offsetSet('test',$third);
         $this->assertEquals(2,$sut->count());
         $this->assertInternalType('array',$sut->offsetGet('test'));
@@ -235,12 +235,12 @@ class CachedClassTest extends \PHPUnit_Framework_TestCase
     {
         $sut = new CachedClass('test3');
         $this->assertEquals('test3', $sut->getName());
-        $hydrateFrom=new HydrateFrom();
+        $from=new From();
         $storedProperty=
-        $first=new CachedProperty('test3','abc',$hydrateFrom);
-        $second=new CachedProperty('test3','abc',$hydrateFrom);
-        $third=new CachedProperty('test3','def',$hydrateFrom);
-        $fourth=new CachedProperty('test3','def',$hydrateFrom);
+        $first=new CachedProperty('test3','abc',$from);
+        $second=new CachedProperty('test3','abc',$from);
+        $third=new CachedProperty('test3','def',$from);
+        $fourth=new CachedProperty('test3','def',$from);
         $sut->add($first);
         $sut->add($second);
         $sut->add($third);

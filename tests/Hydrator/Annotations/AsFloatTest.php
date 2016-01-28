@@ -4,12 +4,12 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
  * Class AsFloatTest.
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\AsFloat
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\CastBase
+ * @uses \Bairwell\Hydrator\Annotations\AsFloat
+ * @uses \Bairwell\Hydrator\Annotations\AsBase
  */
 class AsFloatTest extends \PHPUnit_Framework_TestCase
 {
@@ -52,12 +52,12 @@ class AsFloatTest extends \PHPUnit_Framework_TestCase
      * Testing inheritance.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsFloat
+     * @covers \Bairwell\Hydrator\Annotations\AsFloat
      */
     public function testConstructor() {
         $sut=new AsFloat();
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\AsFloat',$sut);
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\CastBase',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsFloat',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsBase',$sut);
         $this->assertEquals('.',$sut->decimalSeparator);
         $this->assertEquals(',',$sut->digitsSeparator);
         $this->assertNull($sut->precision);
@@ -68,7 +68,7 @@ class AsFloatTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsFloat::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsFloat::cast
      */
     public function testCastDefaults()
     {
@@ -91,7 +91,7 @@ class AsFloatTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsFloat::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsFloat::cast
      */
     public function testCast()
     {
@@ -120,12 +120,12 @@ class AsFloatTest extends \PHPUnit_Framework_TestCase
         foreach ($invalidValues as $value) {
             $this->assertNull($sut->cast($value), 'When floating invalid value');
             $this->assertTrue($sut->hasErrored());
-            $this->assertSame(CastBase::FLOAT_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
+            $this->assertSame(AsBase::FLOAT_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
             $this->assertEquals(['decimalSeparator'=>'.','digitsSeparator'=>','],$sut->getErrorTokens());
             // with different default
             $this->assertEquals(1.4323534, $sut->cast($value,1.4323534), 'Comparing floats of '.$value, 0.0001);
             $this->assertTrue($sut->hasErrored());
-            $this->assertSame(CastBase::FLOAT_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
+            $this->assertSame(AsBase::FLOAT_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
             $this->assertEquals(['decimalSeparator'=>'.','digitsSeparator'=>','],$sut->getErrorTokens());
         }
     }
@@ -134,19 +134,19 @@ class AsFloatTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsFloat::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsFloat::cast
      */
     public function testCastInvalidFormat()
     {
         $sut=new AsFloat();
         $this->assertNull($sut->cast([]), 'When floating invalid format value');
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
+        $this->assertSame(AsBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
         $this->assertEquals([],$sut->getErrorTokens());
         // with different default
         $this->assertEquals(273.123454,$sut->cast([],273.123454), 'When floating invalid format value', 0.0001);
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
+        $this->assertSame(AsBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
         $this->assertEquals([],$sut->getErrorTokens());
     }
 
@@ -154,7 +154,7 @@ class AsFloatTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsFloat::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsFloat::cast
      */
     public function testCastDifferentThousands()
     {
@@ -170,7 +170,7 @@ class AsFloatTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsFloat::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsFloat::cast
      */
     public function testCastDifferentDecimals()
     {
@@ -184,7 +184,7 @@ class AsFloatTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsFloat::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsFloat::cast
      */
     public function testCastRounding() {
         $sut=new AsFloat();
@@ -205,7 +205,7 @@ class AsFloatTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsFloat::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsFloat::cast
      */
     public function testCastRoundingStrings() {
         $sut=new AsFloat();

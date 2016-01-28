@@ -6,8 +6,7 @@ declare (strict_types = 1);
 
 namespace Bairwell\Hydrator;
 
-use Bairwell\Hydrator\Annotations\TypeCast;
-use Bairwell\Hydrator\Annotations\HydrateFrom;
+use Bairwell\Hydrator\Annotations as Hydrate;
 
 class MockedObject {
 
@@ -23,15 +22,15 @@ class MockedObject {
     /**
      * Needs an annotation for casting.
      *
-     * @TypeCast\AsInt
-     * @HydrateFrom(sources="dummySource",field="numbered",conditions="sunrisen")
+     * @Hydrate\AsInt
+     * @Hydrate\From(sources="dummySource",field="numbered",conditions="sunrisen")
      */
     public $testIntCast;
     /**
      * Needs an annotation for casting.
      *
-     * @TypeCast\AsString
-     * @HydrateFrom(sources="dummySource",field="stringed",conditions="moonrisen")
+     * @Hydrate\AsString
+     * @Hydrate\From(sources="dummySource",field="stringed",conditions="moonrisen")
      */
     public $testStringCast;
     /**
@@ -45,7 +44,7 @@ class MockedObject {
     /**
      * Needs an annotation for casting.
      *
-     * @HydrateFrom(sources="other")
+     * @Hydrate\From(sources="other")
      */
     public $testOther;
 }

@@ -4,12 +4,12 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
  * Class AsStringTest.
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\AsString
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\CastBase
+ * @uses \Bairwell\Hydrator\Annotations\AsString
+ * @uses \Bairwell\Hydrator\Annotations\AsBase
  */
 class AsStringTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,15 +40,15 @@ class AsStringTest extends \PHPUnit_Framework_TestCase
      */
     public function testInheritence() {
         $sut=new AsString();
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\AsString',$sut);
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\CastBase',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsString',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsBase',$sut);
         $this->assertTrue($sut->allowNull);
     }
     /**
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsString::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsString::cast
      */
     public function testCastInvalidDefault() {
         $sut=new AsString();
@@ -63,19 +63,19 @@ class AsStringTest extends \PHPUnit_Framework_TestCase
      * Test unmatched values.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsString::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsString::doCast
      */
     public function testCastTypes() {
         $sut=new AsString();
         $this->assertFalse($sut->hasErrored());
         $this->assertNull($sut->cast([]));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
+        $this->assertSame(AsBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
         // same again, but with a value.
         $this->assertEquals('hi',$sut->cast([],'hi'));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
+        $this->assertSame(AsBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
         // and ensure errors are cleared afterwards
         $this->assertEquals('',$sut->cast(''));
@@ -86,7 +86,7 @@ class AsStringTest extends \PHPUnit_Framework_TestCase
      * Test matched values.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsString::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsString::doCast
      */
     public function testCast()
     {

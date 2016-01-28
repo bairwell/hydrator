@@ -4,12 +4,12 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
  * Class AsDateTimeTest.
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\CastBase
+ * @uses \Bairwell\Hydrator\Annotations\AsDateTime
+ * @uses \Bairwell\Hydrator\Annotations\AsBase
  */
 class AsDateTimeTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,12 +46,12 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
      * Testing inheritance.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::__construct
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::__construct
      */
     public function testConstructor() {
         $sut=new AsDateTime();
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\AsDateTime',$sut);
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\CastBase',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsDateTime',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsBase',$sut);
         $min=new \DateTime('1970-01-01 00:00:00');
         $max=new \DateTime('2999-12-31 23:59:59');
         $this->assertEquals($min,$sut->min);
@@ -63,7 +63,7 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::cast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::cast
      */
     public function testCastInvalidDefault() {
         $sut=new AsDateTime();
@@ -76,8 +76,8 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
     }
     /**
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::doCast
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::attemptCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::attemptCast
      */
     public function testCastInvalidMin() {
         $sut=new AsDateTime();
@@ -98,8 +98,8 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
     }
     /**
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::doCast
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::attemptCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::attemptCast
      */
     public function testCastInvalidMax() {
         $sut=new AsDateTime();
@@ -122,49 +122,49 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::doCast
      */
     public function testCastInvalidTypes() {
         $sut=new AsDateTime();
         $this->assertFalse($sut->hasErrored());
         $this->assertNull($sut->cast([]));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
+        $this->assertSame(AsBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
         // now try with a different default
         $default=new \DateTime();
         $this->assertSame($default,$sut->cast([],$default));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
+        $this->assertSame(AsBase::ONLY_STRINGS_NUMERICS,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
     }
     /**
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::doCast
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::attemptCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::attemptCast
      */
     public function testCastNotAccepted() {
         $sut=new AsDateTime();
         $this->assertFalse($sut->hasErrored());
         $this->assertNull($sut->cast('hello'));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::DATETIME_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
+        $this->assertSame(AsBase::DATETIME_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
         // now try with a different default
         $default=new \DateTime();
         $this->assertSame($default,$sut->cast('thingy',$default));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::DATETIME_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
+        $this->assertSame(AsBase::DATETIME_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
     }
     /**
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::doCast
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::attemptCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::attemptCast
      */
     public function testCastAtom() {
         $expected=new \DateTime('2015-06-15T11:47:32+00:00');
@@ -175,15 +175,15 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
         // overflow check
         $this->assertEquals($expected,$sut->cast('2015-06-32T11:47:32+00:00',$expected),'Overflow check for Atom format');
         $this->assertTrue($sut->hasErrored(),'Overflow check for Atom format');
-        $this->assertSame(CastBase::DATETIME_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage(),'Overflow check for Atom format');
+        $this->assertSame(AsBase::DATETIME_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage(),'Overflow check for Atom format');
         $this->assertEmpty($sut->getErrorTokens(),'Overflow check for Atom format');
     }
     /**
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::doCast
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::attemptCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::attemptCast
      */
     public function testCastRfc() {
         $expected=new \DateTime('2015-06-15T11:47:32+00:00');
@@ -194,15 +194,15 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
         // overflow check
         $this->assertEquals($expected,$sut->cast('Wed, 31 Jun 2015 11:47:32 +0000',$expected),'Overflow check for Rfc format');
         $this->assertTrue($sut->hasErrored(),'Overflow check for Rfc format');
-        $this->assertSame(CastBase::DATETIME_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage(),'Overflow check for Rfc format');
+        $this->assertSame(AsBase::DATETIME_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage(),'Overflow check for Rfc format');
         $this->assertEmpty($sut->getErrorTokens(),'Overflow check for Rfc format');
     }
     /**
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::doCast
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::attemptCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::attemptCast
      */
     public function testCastUnix() {
         $expected=new \DateTime('2015-06-15T11:47:32+00:00');
@@ -215,7 +215,7 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::doCast
      */
     public function testCastTooEarly() {
         $sut=new AsDateTime();
@@ -233,7 +233,7 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($ourMin,$sut->min);
         $this->assertNull($sut->cast($value));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::DATETIME_OUTSIDE_ACCEPTABLE_RANGE,$sut->getErrorMessage());
+        $this->assertSame(AsBase::DATETIME_OUTSIDE_ACCEPTABLE_RANGE,$sut->getErrorMessage());
         $expectedTokens=['%min%'=>$sut->min->format('Y-m-d H:i:s'),'%max%'=>$sut->max->format('Y-m-d H:i:s')];
         $this->assertEquals($expectedTokens,$sut->getErrorTokens());
         // exact check
@@ -249,7 +249,7 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::doCast
      */
     public function testCastTooLate() {
         $sut=new AsDateTime();
@@ -266,7 +266,7 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
         $value='2004-04-01T11:47:32+00:00';
         $this->assertNull($sut->cast($value));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::DATETIME_OUTSIDE_ACCEPTABLE_RANGE,$sut->getErrorMessage());
+        $this->assertSame(AsBase::DATETIME_OUTSIDE_ACCEPTABLE_RANGE,$sut->getErrorMessage());
         $expectedTokens=['%min%'=>$sut->min->format('Y-m-d H:i:s'),'%max%'=>$sut->max->format('Y-m-d H:i:s')];
         $this->assertEquals($expectedTokens,$sut->getErrorTokens());
         // exact check
@@ -281,7 +281,7 @@ class AsDateTimeTest extends \PHPUnit_Framework_TestCase
      * Testing defaults are within range.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsDateTime::doCast
      */
     public function testDefaultWithinRange() {
         $sut=new AsDateTime();

@@ -4,12 +4,12 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
  * Class AsArrayTest.
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\AsArray
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\CastBase
+ * @uses \Bairwell\Hydrator\Annotations\AsArray
+ * @uses \Bairwell\Hydrator\Annotations\AsBase
  */
 class AsArrayTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,8 +40,8 @@ class AsArrayTest extends \PHPUnit_Framework_TestCase
      */
     public function testInheritence() {
         $sut=new AsArray();
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\AsArray',$sut);
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\CastBase',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsArray',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsBase',$sut);
         $this->assertTrue($sut->allowNull);
     }
 
@@ -49,7 +49,7 @@ class AsArrayTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsArray::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsArray::doCast
      */
     public function testCast() {
         $sut=new AsArray();
@@ -62,7 +62,7 @@ class AsArrayTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsArray::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsArray::doCast
      */
     public function testCastInvalidDefault() {
         $sut=new AsArray();

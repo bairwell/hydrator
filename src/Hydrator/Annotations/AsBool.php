@@ -12,15 +12,15 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
  * Used to annotate items should be type cast to booleans.
  *
  * @Annotation
- * @Target({"PROPERTY"})
+ * @Target({"PROPERTY","ANNOTATION"})
  */
-final class AsBool extends CastBase
+final class AsBool extends AsBase
 {
     /**
      * Allow null

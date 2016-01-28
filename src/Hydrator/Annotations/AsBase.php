@@ -12,14 +12,14 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
- * Class CastBase.
+ * Class AsBase.
  *
  * Base class for all typeCast classes to inherit from.
  */
-abstract class CastBase
+abstract class AsBase
 {
 
     const ONLY_STRINGS_NUMERICS = 'Only strings or numerics are accepted';
@@ -40,6 +40,12 @@ abstract class CastBase
                                              'separator %digitsSeparator%';
     const DECIMAL_OUTSIDE_ACCEPTABLE_RANGE = 'Decimal must be between %min% and %max%';
 
+    const UUID_INVALID_CHARACTERS = 'Uuid contains invalid characters';
+
+    const UUID_WRONG_LENGTH = 'Uuid is the wrong length';
+
+    const ARRAY_CONTENTS_INVALID='Array contains invalid items - only %validCount% out of %totalCount%'.
+                                 'items allowed. Acceptable items keys: "%validItemsList%", Invalid items keys: "%invalidItemsList%"';
     /**
      * Allow null.
      *

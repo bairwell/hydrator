@@ -7,19 +7,19 @@ declare (strict_types = 1);
 namespace Bairwell\Hydrator\Annotations;
 
 /**
- * Class HydrateFromTest.
+ * Class FromTest.
  */
-class HydrateFromTest extends \PHPUnit_Framework_TestCase
+class FromTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
      * Testing annotations.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @covers \Bairwell\Hydrator\Annotations\From
      */
     public function testAnnotations() {
-        $sut=new HydrateFrom();
+        $sut=new From();
         $reflection=new \ReflectionClass($sut);
         $this->assertTrue($reflection->isFinal());
         $properties=$reflection->getDefaultProperties();

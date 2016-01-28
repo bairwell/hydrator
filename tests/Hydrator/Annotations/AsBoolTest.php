@@ -4,12 +4,12 @@
  */
 declare (strict_types = 1);
 
-namespace Bairwell\Hydrator\Annotations\TypeCast;
+namespace Bairwell\Hydrator\Annotations;
 
 /**
  * Class AsBoolTest.
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\asBool
- * @uses \Bairwell\Hydrator\Annotations\TypeCast\CastBase
+ * @uses \Bairwell\Hydrator\Annotations\asBool
+ * @uses \Bairwell\Hydrator\Annotations\AsBase
  */
 class AsBoolTest extends \PHPUnit_Framework_TestCase
 {
@@ -39,8 +39,8 @@ class AsBoolTest extends \PHPUnit_Framework_TestCase
      */
     public function testInheritence() {
         $sut=new AsBool();
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\AsBool',$sut);
-        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\TypeCast\CastBase',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsBool',$sut);
+        $this->assertInstanceOf('\Bairwell\Hydrator\Annotations\AsBase',$sut);
         $this->assertTrue($sut->allowNull);
 
     }
@@ -48,7 +48,7 @@ class AsBoolTest extends \PHPUnit_Framework_TestCase
      * Testing cast.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsInt::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsInt::doCast
      */
     public function testCastInvalidDefault() {
         $sut=new AsBool();
@@ -64,7 +64,7 @@ class AsBoolTest extends \PHPUnit_Framework_TestCase
      * Test cast with true values.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsBool::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsBool::doCast
      */
     public function testCastTrues()
     {
@@ -89,7 +89,7 @@ class AsBoolTest extends \PHPUnit_Framework_TestCase
      * Test cast with false values.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsBool::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsBool::doCast
      */
     public function testCastFalses()
     {
@@ -122,19 +122,19 @@ class AsBoolTest extends \PHPUnit_Framework_TestCase
      * Test unmatched values.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsBool::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsBool::doCast
      */
     public function testCastTypes() {
         $sut=new AsBool();
         $this->assertFalse($sut->hasErrored());
         $this->assertNull($sut->cast([]));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::ONLY_BOOLS_STRINGS_NUMERICS,$sut->getErrorMessage());
+        $this->assertSame(AsBase::ONLY_BOOLS_STRINGS_NUMERICS,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
         // same again, but with a value.
         $this->assertTrue($sut->cast([],true));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::ONLY_BOOLS_STRINGS_NUMERICS,$sut->getErrorMessage());
+        $this->assertSame(AsBase::ONLY_BOOLS_STRINGS_NUMERICS,$sut->getErrorMessage());
         $this->assertEmpty($sut->getErrorTokens());
         // and ensure errors are cleared afterwards
         $this->assertFalse($sut->cast(''));
@@ -145,7 +145,7 @@ class AsBoolTest extends \PHPUnit_Framework_TestCase
      * Test unmatched values.
      *
      * @test
-     * @covers \Bairwell\Hydrator\Annotations\TypeCast\AsBool::doCast
+     * @covers \Bairwell\Hydrator\Annotations\AsBool::doCast
      */
     public function testCastUnmatched()
     {
@@ -154,12 +154,12 @@ class AsBoolTest extends \PHPUnit_Framework_TestCase
         // with default
         $this->assertFalse($sut->cast('thing',false));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::BOOL_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
+        $this->assertSame(AsBase::BOOL_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
         $this->assertEquals(['%trues%' => '1,true,on,yes','%falses%' => '0,false,off,no'],$sut->getErrorTokens());
         // without default
         $this->assertNull($sut->cast('thing'));
         $this->assertTrue($sut->hasErrored());
-        $this->assertSame(CastBase::BOOL_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
+        $this->assertSame(AsBase::BOOL_MUST_BE_ACCEPTED_FORMAT,$sut->getErrorMessage());
         $this->assertEquals(['%trues%' => '1,true,on,yes','%falses%' => '0,false,off,no'],$sut->getErrorTokens());
     }
 }

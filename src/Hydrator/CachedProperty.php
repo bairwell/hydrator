@@ -12,8 +12,8 @@ declare (strict_types = 1);
 
 namespace Bairwell\Hydrator;
 
-use Bairwell\Hydrator\Annotations\HydrateFrom;
-use Bairwell\Hydrator\Annotations\TypeCast\CastBase;
+use Bairwell\Hydrator\Annotations\From;
+use Bairwell\Hydrator\Annotations\AsBase;
 
 /**
  * Class CachedProperty.
@@ -40,14 +40,14 @@ class CachedProperty
     /**
      * Cast as.
      *
-     * @var CastBase|null $castAs
+     * @var AsBase|null $castAs
      */
     protected $castAs = null;
 
     /**
      * Where are we hydrating from.
      *
-     * @var HydrateFrom $from
+     * @var From $from
      */
     protected $from;
 
@@ -56,10 +56,10 @@ class CachedProperty
      *
      * @param string        $className    Name of the class for this property.
      * @param string        $propertyName Name of the property.
-     * @param HydrateFrom   $from         Where we are hydrating from.
-     * @param CastBase|null $castAs       Any cast setting.
+     * @param From   $from         Where we are hydrating from.
+     * @param AsBase|null $castAs       Any cast setting.
      */
-    public function __construct(string $className, string $propertyName, HydrateFrom $from, CastBase $castAs = null)
+    public function __construct(string $className, string $propertyName, From $from, AsBase $castAs = null)
     {
         $this->setClassName($className);
         $this->setName($propertyName);
@@ -96,9 +96,9 @@ class CachedProperty
     /**
      * What should we cast as?
      *
-     * @return CastBase
+     * @return AsBase
      */
-    public function getCastAs() : CastBase
+    public function getCastAs() : AsBase
     {
         return $this->castAs;
     }//end getCastAs()
@@ -122,11 +122,11 @@ class CachedProperty
     /**
      * What should we cast as?
      *
-     * @param CastBase|null $as What, if anything, should we be typecasting to.
+     * @param AsBase|null $as What, if anything, should we be typecasting to.
      *
      * @return self
      */
-    public function setCastAs(CastBase $as = null) : self
+    public function setCastAs(AsBase $as = null) : self
     {
         $this->castAs = $as;
 
@@ -137,9 +137,9 @@ class CachedProperty
     /**
      * Return where we are hydrating from.
      *
-     * @return HydrateFrom
+     * @return From
      */
-    public function getFrom() : HydrateFrom
+    public function getFrom() : From
     {
         return $this->from;
     }//end getFrom()
@@ -148,11 +148,11 @@ class CachedProperty
     /**
      * Set where we are hydrating from.
      *
-     * @param HydrateFrom $from The item we are hydrating from.
+     * @param From $from The item we are hydrating from.
      *
      * @return self
      */
-    public function setFrom(HydrateFrom $from) : self
+    public function setFrom(From $from) : self
     {
         $this->from = $from;
 

@@ -8,8 +8,8 @@ declare (strict_types = 1);
 namespace Bairwell;
 
 use Bairwell\Hydrator;
-use Bairwell\Hydrator\Annotations\HydrateFrom;
-use Bairwell\Hydrator\Annotations\TypeCast\AsString;
+use Bairwell\Hydrator\Annotations\From;
+use Bairwell\Hydrator\Annotations\AsString;
 use Bairwell\Hydrator\CachedClass;
 use Doctrine\Common\Annotations\AnnotationException;
 
@@ -756,8 +756,8 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedClass
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @covers \Bairwell\Hydrator::parseProperty
      */
     public function testParseProperty()
@@ -784,11 +784,11 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         // setup the annotation reader
 
         $cast                    = new AsString();
-        $hydrateFrom             = new HydrateFrom();
-        $hydrateFrom->sources    = ['header', 'body'];
-        $hydrateFrom->conditions = ['isjuly', 'isnotseptember'];
-        $hydrateFrom->field      = 'jeff';
-        $annotations             = [$cast, $hydrateFrom];
+        $from             = new From();
+        $from->sources    = ['header', 'body'];
+        $from->conditions = ['isjuly', 'isnotseptember'];
+        $from->field      = 'jeff';
+        $annotations             = [$cast, $from];
         $annotationReader        = $this->getMockForAbstractClass('\Doctrine\Common\Annotations\Reader');
         $annotationReader->expects($this->once())
                          ->method('getPropertyAnnotations')
@@ -817,7 +817,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $returnedProperty = $propertyArray[0];
         $this->assertEquals('myPropertyName', $returnedProperty->getName());
         $this->assertSame($cast, $returnedProperty->getCastAs());
-        $this->assertSame($hydrateFrom, $returnedProperty->getFrom());
+        $this->assertSame($from, $returnedProperty->getFrom());
     }
 
     /**
@@ -831,8 +831,8 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedClass
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @covers \Bairwell\Hydrator::parseProperty
      */
     public function testParsePropertyEmptyField()
@@ -860,11 +860,11 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         // setup the annotation reader
 
         $cast                    = new AsString();
-        $hydrateFrom             = new HydrateFrom();
-        $hydrateFrom->sources    = ['header', 'body'];
-        $hydrateFrom->conditions = ['isjuly', 'isnotseptember'];
-        $hydrateFrom->field      = '';
-        $annotations             = [$cast, $hydrateFrom];
+        $from             = new From();
+        $from->sources    = ['header', 'body'];
+        $from->conditions = ['isjuly', 'isnotseptember'];
+        $from->field      = '';
+        $annotations             = [$cast, $from];
         $annotationReader        = $this->getMockForAbstractClass('\Doctrine\Common\Annotations\Reader');
         $annotationReader->expects($this->once())
                          ->method('getPropertyAnnotations')
@@ -910,8 +910,8 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedClass
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @covers \Bairwell\Hydrator::parseProperty
      */
     public function testParsePropertyMultipleCasts()
@@ -971,8 +971,8 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedClass
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @covers \Bairwell\Hydrator::parseProperty
      */
     public function testParsePropertyBadSource()
@@ -1000,11 +1000,11 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         // setup the annotation reader
 
         $cast                    = new AsString();
-        $hydrateFrom             = new HydrateFrom();
-        $hydrateFrom->sources    = ['header', 'body'];
-        $hydrateFrom->conditions = ['isjuly', 'isnotseptember'];
-        $hydrateFrom->field      = 'jeff';
-        $annotations             = [$cast, $hydrateFrom];
+        $from             = new From();
+        $from->sources    = ['header', 'body'];
+        $from->conditions = ['isjuly', 'isnotseptember'];
+        $from->field      = 'jeff';
+        $annotations             = [$cast, $from];
         $annotationReader        = $this->getMockForAbstractClass('\Doctrine\Common\Annotations\Reader');
         $annotationReader->expects($this->once())
                          ->method('getPropertyAnnotations')
@@ -1042,8 +1042,8 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedClass
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @covers \Bairwell\Hydrator::parseProperty
      */
     public function testParsePropertyBadConditional()
@@ -1071,11 +1071,11 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         // setup the annotation reader
 
         $cast                    = new AsString();
-        $hydrateFrom             = new HydrateFrom();
-        $hydrateFrom->sources    = ['header', 'body'];
-        $hydrateFrom->conditions = ['isjuly', 'isnotseptember'];
-        $hydrateFrom->field      = 'jeff';
-        $annotations             = [$cast, $hydrateFrom];
+        $from             = new From();
+        $from->sources    = ['header', 'body'];
+        $from->conditions = ['isjuly', 'isnotseptember'];
+        $from->field      = 'jeff';
+        $annotations             = [$cast, $from];
         $annotationReader        = $this->getMockForAbstractClass('\Doctrine\Common\Annotations\Reader');
         $annotationReader->expects($this->once())
                          ->method('getPropertyAnnotations')
@@ -1116,8 +1116,8 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedClass
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @covers \Bairwell\Hydrator::parseProperty
      */
     public function testParsePropertyNoFromAnnotation()
@@ -1173,12 +1173,12 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::__construct
      * @uses   \Bairwell\Hydrator\CachedProperty
      * @uses   \Bairwell\Hydrator\FailureList
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @covers \Bairwell\Hydrator::hydrateSingleProperty
      */
     public function testHydrateNotObject()
     {
-        $from           = new HydrateFrom();
+        $from           = new From();
         $cachedProperty = new Hydrator\CachedProperty('className', 'propertyName', $from);
         $failureList    = new Hydrator\FailureList();
         $sut            = new Hydrator();
@@ -1202,14 +1202,14 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateSources
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @uses   \Bairwell\Hydrator\FailureList
      * @covers \Bairwell\Hydrator::hydrateSingleProperty
      */
     public function testHydrateSinglePropertyNoncallableConditional()
     {
-        $from             = new HydrateFrom();
+        $from             = new From();
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = ['shouldbegreen'];
         $castAs           = new AsString();
@@ -1248,14 +1248,14 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateSources
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @uses   \Bairwell\Hydrator\FailureList
      * @covers \Bairwell\Hydrator::hydrateSingleProperty
      */
     public function testHydrateSinglePropertyNoncallableSource()
     {
-        $from             = new HydrateFrom();
+        $from             = new From();
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = [];
         $castAs           = new AsString();
@@ -1278,7 +1278,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
             $this->fail('Expected exception');
         } catch (\Exception $e) {
             $this->assertEquals(
-                'Source "jeff" is not callable when hydrating testClassName::$myPropertyName',
+                'Source "jeff" is not callable or an array when hydrating testClassName::$myPropertyName',
                 $e->getMessage()
             );
         }
@@ -1293,14 +1293,14 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateSources
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @uses   \Bairwell\Hydrator\FailureList
      * @covers \Bairwell\Hydrator::hydrateSingleProperty
      */
     public function testHydrateSinglePropertyFailedConditional()
     {
-        $from             = new HydrateFrom();
+        $from             = new From();
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = ['shouldbegreen'];
         $castAs           = new AsString();
@@ -1346,7 +1346,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateSources
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @uses   \Bairwell\Hydrator\FailureList
      * @uses   \Bairwell\Hydrator::setLogger
      * @uses   \Bairwell\Hydrator::addHydrationSource
@@ -1356,7 +1356,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testHydrateSinglePropertyWithPropertyName()
     {
-        $from             = new HydrateFrom();
+        $from             = new From();
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = ['shouldbegreen'];
 
@@ -1439,14 +1439,14 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateSources
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @uses   \Bairwell\Hydrator\FailureList
      * @covers \Bairwell\Hydrator::hydrateSingleProperty
      * @covers \Bairwell\Hydrator::hydrateSinglePropertyViaSource
      */
     public function testHydrateSinglePropertyWithFromName()
     {
-        $from             = new HydrateFrom();
+        $from             = new From();
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = ['shouldbegreen'];
         $from->field      = 'thingy';
@@ -1499,19 +1499,19 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateSources
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsDateTime
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @uses   \Bairwell\Hydrator\FailureList
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\CastBase
+     * @uses   \Bairwell\Hydrator\Annotations\AsBase
      * @covers \Bairwell\Hydrator::hydrateSingleProperty
      * @covers \Bairwell\Hydrator::hydrateSinglePropertyViaSource
      */
     public function testHydrateSinglePropertyWithPropertyNameAndCast()
     {
-        $from             = new HydrateFrom();
+        $from             = new From();
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = ['shouldbegreen'];
-        $cast             = new Hydrator\Annotations\TypeCast\AsDateTime();
+        $cast             = new Hydrator\Annotations\AsDateTime();
         $property         = new Hydrator\CachedProperty('className', 'myPropertyName', $from, $cast);
         // setup hydrator
         $sut       = new Hydrator();
@@ -1560,20 +1560,20 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator::validateSources
      * @uses   \Bairwell\Hydrator::validateConditions
      * @uses   \Bairwell\Hydrator\CachedProperty
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsDateTime
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsDateTime
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @uses   \Bairwell\Hydrator\FailureList
      * @uses   \Bairwell\Hydrator\Failure
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\CastBase
+     * @uses   \Bairwell\Hydrator\Annotations\AsBase
      * @covers \Bairwell\Hydrator::hydrateSingleProperty
      * @covers \Bairwell\Hydrator::hydrateSinglePropertyViaSource
      */
     public function testHydrateSinglePropertyWithPropertyNameAndBadCast()
     {
-        $from             = new HydrateFrom();
+        $from             = new From();
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = ['shouldbegreen'];
-        $cast             = new Hydrator\Annotations\TypeCast\AsDateTime();
+        $cast             = new Hydrator\Annotations\AsDateTime();
         $property         = new Hydrator\CachedProperty('className', 'myPropertyName', $from, $cast);
         // setup hydrator
         $sut       = new Hydrator();
@@ -1616,7 +1616,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('myPropertyName', $current->getInputField());
         $this->assertEquals('1420421x760', $current->getInputValue());
         $this->assertEquals(
-            Hydrator\Annotations\TypeCast\CastBase::DATETIME_MUST_BE_ACCEPTED_FORMAT,
+            Hydrator\Annotations\AsBase::DATETIME_MUST_BE_ACCEPTED_FORMAT,
             $current->getMessage()
         );
         $this->assertInternalType('array', $current->getTokens());
@@ -1748,21 +1748,21 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
                                      case 'testNoRecognisedAnnotations':
                                          break;
                                      case 'testIntCast':
-                                         $obj          = new Hydrator\Annotations\TypeCast\AsInt();
+                                         $obj          = new Hydrator\Annotations\AsInt();
                                          $return[]     = $obj;
-                                         $obj          = new \Bairwell\Hydrator\Annotations\HydrateFrom();
+                                         $obj          = new \Bairwell\Hydrator\Annotations\From();
                                          $obj->sources = ['dummySource'];
                                          $return[]     = $obj;
                                          break;
                                      case 'testStringCast':
-                                         $obj          = new Hydrator\Annotations\TypeCast\AsString();
+                                         $obj          = new Hydrator\Annotations\AsString();
                                          $return[]     = $obj;
-                                         $obj          = new \Bairwell\Hydrator\Annotations\HydrateFrom();
+                                         $obj          = new \Bairwell\Hydrator\Annotations\From();
                                          $obj->sources = ['dummySource'];
                                          $return[]     = $obj;
                                          break;
                                      case 'testOther':
-                                         $obj          = new \Bairwell\Hydrator\Annotations\HydrateFrom();
+                                         $obj          = new \Bairwell\Hydrator\Annotations\From();
                                          $obj->sources = ['dummySource'];
                                          $return[]     = $obj;
                                          break;
@@ -1820,10 +1820,10 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator\CachedProperty
      * @uses   \Bairwell\Hydrator\Failure
      * @uses   \Bairwell\Hydrator\FailureList
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\CastBase
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsInt
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsBase
+     * @uses   \Bairwell\Hydrator\Annotations\AsInt
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @covers \Bairwell\Hydrator::hydrateObject
      */
     public function testHydrateObject()
@@ -1934,10 +1934,10 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
      * @uses   \Bairwell\Hydrator\CachedProperty
      * @uses   \Bairwell\Hydrator\Failure
      * @uses   \Bairwell\Hydrator\FailureList
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\CastBase
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsInt
-     * @uses   \Bairwell\Hydrator\Annotations\TypeCast\AsString
-     * @uses   \Bairwell\Hydrator\Annotations\HydrateFrom
+     * @uses   \Bairwell\Hydrator\Annotations\AsBase
+     * @uses   \Bairwell\Hydrator\Annotations\AsInt
+     * @uses   \Bairwell\Hydrator\Annotations\AsString
+     * @uses   \Bairwell\Hydrator\Annotations\From
      * @covers \Bairwell\Hydrator::hydrateObject
      */
     public function testHydrateObjectNotPassedFailureList()

@@ -20,7 +20,7 @@ namespace Bairwell\Hydrator\Annotations;
  * @Annotation
  * @Target({"PROPERTY"})
  */
-final class HydrateFrom
+final class From
 {
 
     /**
@@ -45,4 +45,15 @@ final class HydrateFrom
      * @var array
      */
     public $conditions = [];
+
+    /**
+     * List of available styles to parse array data from. Will allow single items in.
+     *
+     * If the hydrator matches an early entries, it will stop scanning.
+     *
+     * Values: basic (PHP array), csv (foo,bar), ssv (foo bar), tsb(foo\tbar), pipes (foo|bar)
+     *
+     * @var array
+     */
+    public $arrayStyles=[];
 }//end class
