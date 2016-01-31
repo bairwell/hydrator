@@ -31,7 +31,6 @@ use Bairwell\Hydrator\StandardiseString;
 use Bairwell\Hydrator\Sources;
 use Bairwell\Hydrator\Conditionals;
 
-
 /**
  * Class Hydrator.
  * Used to hydrate objects from a variety of sources using Doctrine annotations.
@@ -81,7 +80,7 @@ class Hydrator implements LoggerAwareInterface
      *
      * @var array
      */
-    private $arrayStyles=['csv'=>',','ssv'=>' ','tsb'=>"\n",'pipes'=>'|','semi'=>';','colon'=>':'];
+    private $arrayStyles = ['csv' => ',','ssv' => ' ','tsb' => "\n",'pipes' => '|','semi' => ';','colon' => ':'];
 
     /**
      * Hydrator constructor.
@@ -98,7 +97,8 @@ class Hydrator implements LoggerAwareInterface
         CacheItemPoolInterface $cachePool = null,
         string $cacheKeyPrefix = null,
         int $cacheExpiresAfter = 3600
-    ) {
+    )
+    {
         $this->logger           = $logger;
         $this->annotationReader = $annotationReader;
         $this->cachePool        = $cachePool;
@@ -120,69 +120,78 @@ class Hydrator implements LoggerAwareInterface
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-    }
+    }//end setLogger()
+
 
     /**
      * Main hydration system.
      *
-     * @param object      $object      Object to hydrate (returned by reference).
-     * @param Sources $sources List of sources.
+     * @param object       $object       Object to hydrate (returned by reference).
+     * @param Sources      $sources      List of sources.
      * @param Conditionals $conditionals List of conditionals.
-     * @param FailureList $failureList List of failures.
+     * @param FailureList  $failureList  List of failures.
      *
      * @return FailureList Failures.
      * @throws \TypeError If a non-object has been passed.
      */
-    public function hydrateObject(&$object, Sources $sources, Conditionals $conditionals=null, FailureList $failureList = null)
+    public function hydrateObject(
+        &$object,
+        Sources $sources,
+        Conditionals $conditionals = null,
+        FailureList $failureList = null
+)
     {
         if (false === is_object($object)) {
             throw new \TypeError('Hydrate must be passed an object for hydration');
         }
+
         if (null !== $this->logger) {
             $this->logger->debug(
                 'Hydrator: Attempting to hydrate {className}',
                 ['className' => get_class($object)]
             );
         }
+
         if (null === $failureList) {
             $failureList = new FailureList();
         }
-        if (null===$conditionals) {
-            $conditionals=new Conditionals();
+
+        if (null === $conditionals) {
+            $conditionals = new Conditionals();
         }
 
-        $cachedClass = $this->getCachedClassForObject($object,$sources,$conditionals);
+        $cachedClass = $this->getCachedClassForObject($object, $sources, $conditionals);
 
         if (null !== $this->logger) {
             $this->logger->debug(
                 'Hydrator: {className} has {number] hydratable properties',
-                ['className' => get_class($object),'{number}'=>count($cachedClass)]
+                ['className' => get_class($object),'{number}' => count($cachedClass)]
             );
         }
+
         // there may be multiple configurations for a single property.
         foreach ($cachedClass as $properties) {
             /* @var CachedProperty $property */
             foreach ($properties as $property) {
-
-                $this->hydrateSingleProperty($property, $object, $sources,$conditionals,$failureList);
+                $this->hydrateSingleProperty($property, $object, $sources, $conditionals, $failureList);
             }
         }
 
         return $failureList;
-    }//end hydrateSingleProperty()
+    }//end hydrateObject()
 
     /**
      * Get a "CachedClass" object for a specified object - reading from our cache if possible, if not
      * we'll build the data.
      *
-     * @param object $object The object we want the Cached Class for.
-     * @param Sources $sources The sources.
+     * @param object       $object       The object we want the Cached Class for.
+     * @param Sources      $sources      The sources.
      * @param Conditionals $conditionals The conditionals.
      *
      * @return CachedClass
      * @throws \TypeError If we are called with a non-object.
      */
-    protected function getCachedClassForObject($object,Sources $sources,Conditionals $conditionals) : CachedClass
+    protected function getCachedClassForObject($object, Sources $sources, Conditionals $conditionals) : CachedClass
     {
         if (false === is_object($object)) {
             throw new \TypeError('getCachedClassForObject can only be called with objects: got '.gettype($object));
@@ -200,11 +209,11 @@ class Hydrator implements LoggerAwareInterface
         if (null === $cachedClass || '' === $cachedClass->getName()) {
             $cachedClass    = new CachedClass($className);
             $reflectedClass = new \ReflectionClass($className);
-
-            $properties = $reflectedClass->getProperties(\ReflectionProperty::IS_PUBLIC);
+            // we want all possible properties.
+            $properties = $reflectedClass->getProperties();
             /* @var \ReflectionProperty $property */
             foreach ($properties as $property) {
-                $cachedClass = $this->parseProperty($property, $cachedClass,$sources,$conditionals);
+                $cachedClass = $this->parseProperty($property, $cachedClass, $sources, $conditionals);
             }
 
             // only save it to the cache if it is NOT anonymous.
@@ -214,26 +223,28 @@ class Hydrator implements LoggerAwareInterface
         }
 
         return $cachedClass;
-    }//end getFromCache()
+    }//end getCachedClassForObject()
 
     /**
      * Hydrate a single property.
      *
-     * @param CachedProperty $property    The property we are hydrating.
-     * @param object         $object      The object we are injecting into (reference).
-     * @param FailureList    $failureList Our current list of failure reasons (reference).
+     * @param CachedProperty $property     The property we are hydrating.
+     * @param object         $object       The object we are injecting into (reference).
+     * @param Sources        $sources      The hydration sources.
+     * @param Conditionals   $conditionals The conditions to run.
+     * @param FailureList    $failureList  Our current list of failure reasons (reference).
      *
      * @return object The object after we have injected into it.
      * @throws \TypeError If not passed an object.
-     * @throws \Exception If sources/conditionals are inaccurate.
      */
     public function hydrateSingleProperty(
         CachedProperty $property,
         $object,
-    Sources $sources,
-    Conditionals $conditionals,
+        Sources $sources,
+        Conditionals $conditionals,
         FailureList &$failureList
-    ) {
+    )
+    {
         if (false === is_object($object)) {
             throw new \TypeError(
                 'HydrateSingleProperty must be passed an '.
@@ -244,95 +255,53 @@ class Hydrator implements LoggerAwareInterface
         $propertyName = $property->getName();
         $className    = $property->getClassName();
         // double check our data just in case things have changed from the cached version.
-        $from       = $property->getFrom();
-        $annotationSources    = $this->validateSources($from->sources, $className.'::$'.$propertyName,$sources);
-        $annotationConditions = $this->validateConditions($from->conditions, $className.'::$'.$propertyName,$conditionals);
-        $fromField  = $from->field;
+        $from                 = $property->getFrom();
+        $annotationSources    = $this->validateSources(
+            $from->sources,
+            $className.'::$'.$propertyName,
+            $sources
+        );
+        $annotationConditions = $this->validateConditions(
+            $from->conditions,
+            $className.'::$'.$propertyName,
+            $conditionals
+        );
+        $fromField            = $from->field;
         if (true === empty($fromField)) {
-            if (null !== $this->logger) {
-                $this->logger->debug(
-                    'Hydrator: No from field set for {className}::{propertyName} - using property name',
-                    ['className' => $className, 'propertyName' => $propertyName]
-                );
-            }
             $fromField = $propertyName;
         }
 
         // now to check the conditions are okay for hydration.
         foreach ($annotationConditions as $annotationCondition) {
             if (false === call_user_func($conditionals[$annotationCondition])) {
-                if (null !== $this->logger) {
-                    $this->logger->debug(
-                        'Hydrator: Conditional {condition} returned false - not setting {className}::{propertyName}',
-                        [
-                            'condition'    => $annotationCondition,
-                            'className'    => $className,
-                            'propertyName' => $propertyName
-                        ]
-                    );
-                }
-
                 return $object;
             }
         }
 
         $currentValue = null;
         foreach ($annotationSources as $annotationSource) {
-            if (null !== $this->logger) {
-                $this->logger->debug(
-                    'Hydrator: Attempting to hydrate from source {source} (type {type} ) field {fromField}',
-                    ['source' => $annotationSource, 'type' => gettype($sources[$annotationSource]), 'fromField' => $fromField]
-                );
-            }
             $currentValue = $this->hydrateSinglePropertyViaSource(
                 $currentValue,
                 $sources[$annotationSource],
-            $annotationSource,
+                $annotationSource,
                 $fromField,
                 $property,
                 $failureList
             );
-            if (null !== $this->logger) {
-                $this->logger->debug(
-                    'Hydrator: Hydrator for {className}::{propertyName} after {source} currently - '.
-                    'type {type} value {value}',
-                    [
-                        'className'    => $className,
-                        'propertyName' => $propertyName,
-                        'source'       => $annotationSource,
-                        'type'         => gettype($currentValue),
-                        'value'        => $currentValue
-                    ]
-                );
-            }
         }//end foreach
         if (null !== $currentValue) {
-            $object->$propertyName = $currentValue;
-            if (null !== $this->logger) {
-                $this->logger->debug(
-                    'Hydrator: Setting value for {className}::{propertyName} - type {type} value {value}',
-                    [
-                        'className'    => $className,
-                        'propertyName' => $propertyName,
-                        'type'         => gettype($currentValue),
-                        'value'        => $currentValue
-                    ]
-                );
+            // only use reflection if necessary.
+            if (true === $property->isPublic()) {
+                $object->$propertyName = $currentValue;
+            } else {
+                $reflectedProperty = new \ReflectionProperty(get_class($object), $propertyName);
+                $reflectedProperty->setAccessible(true);
+                $reflectedProperty->setValue($object, $currentValue);
             }
-        } else {
-            if (null !== $this->logger) {
-                $this->logger->debug(
-                    'Hydrator: Did not find a value for {className}::{propertyName}',
-                    [
-                        'className'    => $className,
-                        'propertyName' => $propertyName
-                    ]
-                );
-            }
-        }
+        }//end if
 
         return $object;
-    }//end getAnnotationReader()
+    }//end hydrateSingleProperty()
 
     /**
      * Get a cached item from the PSR cache.
@@ -364,41 +333,36 @@ class Hydrator implements LoggerAwareInterface
         $value = new CachedClass('');
 
         return $value;
-    }//end saveToCache()
+    }//end getFromCache()
 
     /**
      * Parse a property.
      *
-     * @param \ReflectionProperty $property    The reflected property.
-     * @param CachedClass         $cachedClass The object we are building which contains all the data about this class.
-     * @param Sources $sources Configured sources.
-     * @param Conditionals $conditionals Configured conditionals.
+     * @param \ReflectionProperty $property     The reflected property.
+     * @param CachedClass         $cachedClass  Object we are building which contains all the data about this class.
+     * @param Sources             $sources      Configured sources.
+     * @param Conditionals        $conditionals Configured conditionals.
+     *
      * @return CachedClass
+     *
      * @throws AnnotationException If there is something wrong with the annotations.
      */
     protected function parseProperty(
         \ReflectionProperty $property,
         CachedClass $cachedClass,
-    Sources $sources,
-    Conditionals $conditionals
+        Sources $sources,
+        Conditionals $conditionals
     ) : CachedClass
     {
         $propertyName       = $property->getName();
-        $declaringClassName = $property->getDeclaringClass()
-                                       ->getName();
+        $declaringClassName = $property->getDeclaringClass()->getName();
+        $modifiers          = $property->getModifiers();
         $castAs             = null;
         $froms              = [];
-        $annotations        = $this->getAnnotationReader()
-                                   ->getPropertyAnnotations($property);
-        if (null!==$this->logger) {
-            $this->logger->debug('Hydrator: Checking annotations for {className}::{propertyName}',
-                                 ['className'=>$declaringClassName,'propertyName'=>$propertyName]);
-        }
+        $annotations        = $this->getAnnotationReader()->getPropertyAnnotations($property);
+
+
         foreach ($annotations as $anno) {
-            if (null!==$this->logger) {
-                $this->logger->debug('Hydrator: Found that {className}::{propertyName} has an annotation of: {annotationType}',
-                                     ['className'=>$declaringClassName,'propertyName'=>$propertyName,'annotationType'=>get_class($anno)]);
-            }
             if (true === ($anno instanceof AsBase)) {
                 if (null !== $castAs) {
                     throw new AnnotationException(
@@ -406,25 +370,29 @@ class Hydrator implements LoggerAwareInterface
                         $propertyName.' has multiple'
                     );
                 }
+
                 // @todo add validation of cast (especially important for arrays with nested casts)
                 $castAs = $anno;
             } elseif (true === ($anno instanceof From)) {
-                if (null!==$this->logger) {
-                    $this->logger->debug('Hydrator: Found from: {sources}, conditions: {conditions}',
-                                         ['sources'=>$anno->sources,'conditions'=>$anno->conditions]);
+                if (null !== $this->logger) {
+                    $this->logger->debug(
+                        'Hydrator: Found from: {sources}, conditions: {conditions}',
+                        ['sources' => $anno->sources,'conditions' => $anno->conditions]
+                    );
                 }
+
                 /* @var From $anno */
-                $anno->sources    = $this->validateSources(
+                $anno->sources     = $this->validateSources(
                     $anno->sources,
                     $declaringClassName.'::$'.$propertyName,
                     $sources
                 );
-                $anno->conditions = $this->validateConditions(
+                $anno->conditions  = $this->validateConditions(
                     $anno->conditions,
                     $declaringClassName.'::$'.$propertyName,
                     $conditionals
                 );
-                $anno->arrayStyles=$this->validateArrayStyles(
+                $anno->arrayStyles = $this->validateArrayStyles(
                     $anno->arrayStyles,
                     $declaringClassName.'::$'.$propertyName
                 );
@@ -439,13 +407,13 @@ class Hydrator implements LoggerAwareInterface
         if (false === empty($froms)) {
             /* @var From $from */
             foreach ($froms as $from) {
-                $newProperty = new CachedProperty($declaringClassName, $propertyName, $from, $castAs);
+                $newProperty = new CachedProperty($declaringClassName, $propertyName, $from, $modifiers, $castAs);
                 $cachedClass->add($newProperty);
             }
         }
 
         return $cachedClass;
-    }//end getCachedClassForObject()
+    }//end parseProperty()
 
     /**
      * Save an item to the PSR cache.
@@ -469,19 +437,19 @@ class Hydrator implements LoggerAwareInterface
         $this->cachePool->save($cached);
 
         return true;
-    }//end parseProperty()
+    }//end saveToCache()
 
     /**
      * Validate the sources of a hydrate from.
      *
-     * @param array  $annotationSources          List of annotation sources.
-     * @param string $propertyFullName The name of the property we are checking.
-     * @param Sources $sources Actual sources.
+     * @param array   $annotationSources List of annotation sources.
+     * @param string  $propertyFullName  The name of the property we are checking.
+     * @param Sources $sources           Actual sources.
      *
      * @return array
      * @throws AnnotationException If there is something wrong with the annotations.
      */
-    protected function validateSources(array $annotationSources, string $propertyFullName,Sources $sources)
+    protected function validateSources(array $annotationSources, string $propertyFullName, Sources $sources)
     {
         if (true === empty($sources)) {
             throw new AnnotationException('No source specified in annotation for '.$propertyFullName);
@@ -496,53 +464,65 @@ class Hydrator implements LoggerAwareInterface
                     gettype($annotationSource)
                 );
             }
-            if (false===isset($sources[$annotationSource])) {
-                throw new AnnotationException('Missing/unrecognised source "'.$annotationSource.'" in '.$propertyFullName);
+
+            if (false === isset($sources[$annotationSource])) {
+                throw new AnnotationException(
+                    'Missing/unrecognised source "'.
+                                              $annotationSource.'" in '.
+                                              $propertyFullName
+                );
             } else {
                 $returnSources[] = $annotationSource;
             }
         }
 
         return $returnSources;
-    }//end validateConditions()
+    }//end validateSources()
 
     /**
      * Validate the array styles of a hydrate from.
      *
-     * @param array  $arrayStyles          List of annotation array styles.
+     * @param array  $arrayStyles      List of annotation array styles.
      * @param string $propertyFullName The name of the property we are checking.
      *
      * @return array
      * @throws AnnotationException If there is something wrong with the annotations.
      */
-    protected function validateArrayStyles(array $arrayStyles, string $propertyFullName) : array {
-        $returnStyles=[];
-        $arrayStyles=array_unique($arrayStyles);
+    protected function validateArrayStyles(array $arrayStyles, string $propertyFullName) : array
+    {
+        $returnStyles = [];
+        $arrayStyles  = array_unique($arrayStyles);
         foreach ($arrayStyles as $style) {
-            $style=strtolower($style);
-            if ($style!=='basic' && false===isset($this->arrayStyles[$style])) {
+            $style = strtolower($style);
+            if ($style !== 'basic' && false === isset($this->arrayStyles[$style])) {
                 throw new AnnotationException(
                     'Unrecognised array style of '.
                     $style.
                     ' when processing '.$propertyFullName
                 );
             }
-            $returnStyles[]=$style;
+
+            $returnStyles[] = $style;
         }
+
         return $returnStyles;
-    }//end validateConditions()
+    }//end validateArrayStyles()
 
     /**
      * Validate the conditions of a hydrate from.
      *
-     * @param string[] $conditions       Array of conditions.
-     * @param string   $propertyFullName The name of the property we are checking.
-     * @param Conditionals $conditionals The conditionals.
+     * @param string[]     $conditions       Array of conditions.
+     * @param string       $propertyFullName The name of the property we are checking.
+     * @param Conditionals $conditionals     The conditionals.
      *
      * @return string[]
      * @throws AnnotationException If there is something wrong with the annotations.
      */
-    protected function validateConditions(array $conditions, string $propertyFullName,Conditionals $conditionals) : array
+    protected function validateConditions(
+        array $conditions,
+        string $propertyFullName,
+        Conditionals $conditionals
+    ) : array
     {
         if (true === empty($conditions)) {
             return [];
@@ -568,14 +548,14 @@ class Hydrator implements LoggerAwareInterface
         }
 
         return $returnConditions;
-    }//end validateSources()
+    }//end validateConditions()
 
     /**
      * Hydrate a single property via single source.
      *
      * @param mixed          $currentValue Current value of the property.
-     * @param array|callable         $source       The source we are using.
-     * @param string $sourceName Name of the source.
+     * @param array|callable $source       The source we are using.
+     * @param string         $sourceName   Name of the source.
      * @param string         $fromField    Which field should we be reading from.
      * @param CachedProperty $property     The property we are working on.
      * @param FailureList    $failureList  Referenced list of failures.
@@ -586,34 +566,36 @@ class Hydrator implements LoggerAwareInterface
     private function hydrateSinglePropertyViaSource(
         $currentValue,
         $source,
-    string $sourceName,
+        string $sourceName,
         string $fromField,
         CachedProperty $property,
         FailureList &$failureList
-    ) {
-
+    )
+    {
         if (true === is_array($source)) {
             $data = null;
             if (true === array_key_exists($fromField, $source)) {
                 $data = $source[$fromField];
             }
-        } else if (true===is_callable($source)) {
+        } elseif (true === is_callable($source)) {
             $data = call_user_func($source, $fromField);
         } else {
             throw new \TypeError('Source must be an array or callable: got '.gettype($source));
         }
+
         if (null !== $data) {
-            $arrayStyles=$property->getFrom()->arrayStyles;
-            if (false===empty($arrayStyles)) {
-                $data=$this->extractFromArray($data,$arrayStyles);
+            $arrayStyles = $property->getFrom()->arrayStyles;
+            if (false === empty($arrayStyles)) {
+                $data = $this->extractFromArray($data, $arrayStyles);
             }
+
             if (false === $property->hasCastAs()) {
                 $currentValue = $data;
                 if (null !== $this->logger) {
                     $this->logger->debug(
                         'Hydrator: No cast setting for field {fromField}: {currentValue}',
                         ['fromField' => $fromField,
-                        'currentValue'=>$currentValue]
+                        'currentValue' => $currentValue]
                     );
                 }
             } else {
@@ -622,48 +604,51 @@ class Hydrator implements LoggerAwareInterface
                 if (true === $castAs->hasErrored()) {
                     $failure = new Failure();
                     $failure->setInputField($fromField)
-                            ->setInputValue($data)
-                            ->setMessage($castAs->getErrorMessage())
-                            ->setTokens($castAs->getErrorTokens())
-                            ->setSource($sourceName);
+                        ->setInputValue($data)
+                        ->setMessage($castAs->getErrorMessage())
+                        ->setTokens($castAs->getErrorTokens())
+                        ->setSource($sourceName);
                     $failureList->add($failure);
                     if (null !== $this->logger) {
                         $this->logger->debug(
                             'Hydrator: Cast failed for field {fromField}: {currentValue}: {castErrorMessage}',
                             ['fromField' => $fromField,
-                             'currentValue'=>$currentValue,'castErrorMessage'=>$castAs->getErrorMessage()]
-                    );
+                             'currentValue' => $currentValue,'castErrorMessage' => $castAs->getErrorMessage()]
+                        );
                     }
                 } else {
                     $currentValue = $newValue;
                 }
-            }
-        }
+            }//end if
+        }//end if
 
         return $currentValue;
-    }//end standardiseString()
+    }//end hydrateSinglePropertyViaSource()
 
     /**
      * Try to extract array data from input data.
      *
-     * @param mixed $data Input data.
+     * @param mixed $data        Input data.
      * @param array $arrayStyles Which array styles are supported by this property.
      *
      * @return mixed Either input data or expanded array data.
      */
-    protected function extractFromArray($data,array $arrayStyles=[]) {
+    protected function extractFromArray($data, array $arrayStyles = [])
+    {
         foreach ($arrayStyles as $style) {
-            if ('basic'===$style && true===is_array($data)) {
+            if ('basic' === $style && true === is_array($data)) {
                 return $data;
-            } elseif (true===isset($this->arrayStyles[$style])) {
-                $extracted=str_getcsv($data,$this->arrayStyles[$style]);
-                if (count($extracted)>0) {
+            } elseif (true === isset($this->arrayStyles[$style])) {
+                $extracted = str_getcsv($data, $this->arrayStyles[$style]);
+                if (count($extracted) > 0) {
                     return $extracted;
                 }
             }
         }
+
         return $data;
-    }
+    }//end extractFromArray()
+
 
     /**
      * Get the annotation reader.
@@ -690,5 +675,5 @@ class Hydrator implements LoggerAwareInterface
         }
 
         return $this->annotationReader;
-    }//end hydrateSinglePropertyViaSource()
+    }//end getAnnotationReader()
 }//end class

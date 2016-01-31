@@ -55,5 +55,5 @@ final class From
      *
      * @var array
      */
-    public $arrayStyles=[];
+    public $arrayStyles = [];
 }//end class

@@ -50,6 +50,7 @@ class Failure
 
     /**
      * The input value.
+     *
      * @var mixed
      */
     protected $inputValue = null;

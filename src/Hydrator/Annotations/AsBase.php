@@ -44,8 +44,9 @@ abstract class AsBase
 
     const UUID_WRONG_LENGTH = 'Uuid is the wrong length';
 
-    const ARRAY_CONTENTS_INVALID='Array contains invalid items - only %validCount% out of %totalCount%'.
-                                 'items allowed. Acceptable items keys: "%validItemsList%", Invalid items keys: "%invalidItemsList%"';
+    const ARRAY_CONTENTS_INVALID = 'Array contains invalid items - only %validCount% out of %totalCount%'.
+                                 'items allowed. Acceptable items keys: "%validItemsList%", '.
+                                   'Invalid items keys: "%invalidItemsList%"';
     /**
      * Allow null.
      *

@@ -40,19 +40,18 @@ class Conditionals implements \Iterator, \Countable, \ArrayAccess
     public function __construct()
     {
         $this->conditionals = [];
-        $this->position = 0;
+        $this->position     = 0;
     }//end __construct()
 
 
     /**
      * Add one or more conditionals.
      *
-     * @param array|string $sourceName Name of the conditionals(s) to add
-     * @param callable $conditional     Actual conditional.
+     * @param array|string $name        Name of the conditionals(s) to add.
+     * @param callable     $conditional Actual conditional.
      *
      * @return self
      * @throws \TypeError If conditional is not valid.
-     * @throws \BadMethodCallException If conditional name already exists.
      */
     public function add($name, callable $conditional) : self
     {
@@ -64,10 +63,12 @@ class Conditionals implements \Iterator, \Countable, \ArrayAccess
 
             return $this;
         }
+
         if (false === is_string($name)) {
             throw new \TypeError('Name must be a string or an array');
         }
-        $this->offsetSet($name,$conditional);
+
+        $this->offsetSet($name, $conditional);
         return $this;
     }//end add()
 
@@ -94,7 +95,8 @@ class Conditionals implements \Iterator, \Countable, \ArrayAccess
         }
 
         $this->offsetUnset($names);
-    }
+    }//end unset()
+
 
     /**
      * Return the current element
@@ -187,7 +189,8 @@ class Conditionals implements \Iterator, \Countable, \ArrayAccess
         if (false === is_string($offset)) {
             throw new \TypeError('Offset must be a string');
         }
-        $offset=$this->standardiseString($offset);
+
+        $offset = $this->standardiseString($offset);
         if (true === isset($this->conditionals[$offset])) {
             return true;
         } else {
@@ -209,7 +212,8 @@ class Conditionals implements \Iterator, \Countable, \ArrayAccess
         if (false === is_string($offset)) {
             throw new \TypeError('Offset must be a string');
         }
-        $offset=$this->standardiseString($offset);
+
+        $offset = $this->standardiseString($offset);
         if (true === isset($this->conditionals[$offset])) {
             return $this->conditionals[$offset];
         } else {
@@ -226,6 +230,7 @@ class Conditionals implements \Iterator, \Countable, \ArrayAccess
      *
      * @return void
      * @throws \TypeError If offset is not an string or value is not callable.
+     * @throws \BadMethodCallException If conditional name is replicated.
      */
     public function offsetSet($offset, $value)
     {
@@ -233,10 +238,12 @@ class Conditionals implements \Iterator, \Countable, \ArrayAccess
             $error = new \TypeError('Offset must be a string');
             throw $error;
         }
+
         $sourceName = $this->standardiseString($offset);
         if (true === isset($this->conditionals[$sourceName])) {
             throw new \BadMethodCallException('Duplicated conditional name '.$sourceName);
         }
+
         if (false === is_callable($value)) {
             throw new \TypeError('Conditional must be a callable for '.$sourceName.': got '.gettype($value));
         }
@@ -259,9 +266,8 @@ class Conditionals implements \Iterator, \Countable, \ArrayAccess
         if (false === is_string($offset)) {
             throw new \TypeError('Offset must be a string');
         }
+
         $offset = $this->standardiseString($offset);
         unset($this->conditionals[$offset]);
     }//end offsetUnset()
-
-
-}
+}//end class

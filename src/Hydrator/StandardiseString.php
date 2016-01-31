@@ -11,7 +11,8 @@ declare (strict_types = 1);
 
 namespace Bairwell\Hydrator;
 
-trait StandardiseString {
+trait StandardiseString
+{
 
     /**
      * Standardise a string. Converts XyZ_abc-def to xyzAbcDef.
@@ -34,5 +35,5 @@ trait StandardiseString {
         }
 
         return $string;
-    }//end unsetAllHydrationSources()
+    }//end standardiseString()
 }

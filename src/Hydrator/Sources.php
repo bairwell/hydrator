@@ -39,7 +39,7 @@ class Sources implements \Iterator, \Countable, \ArrayAccess
      */
     public function __construct()
     {
-        $this->sources = [];
+        $this->sources  = [];
         $this->position = 0;
     }//end __construct()
 
@@ -47,12 +47,11 @@ class Sources implements \Iterator, \Countable, \ArrayAccess
     /**
      * Add one or more sources.
      *
-     * @param array|string $sourceName Name of the source(s) to add
+     * @param array|string   $sourceName Name of the source(s) to add.
      * @param callable|array $source     Actual source.
      *
      * @return self
      * @throws \TypeError If source is not valid.
-     * @throws \BadMethodCallException If source name already exists.
      */
     public function add($sourceName, $source) : self
     {
@@ -64,10 +63,12 @@ class Sources implements \Iterator, \Countable, \ArrayAccess
 
             return $this;
         }
+
         if (false === is_string($sourceName)) {
             throw new \TypeError('SourceName must be a string or an array');
         }
-        $this->offsetSet($sourceName,$source);
+
+        $this->offsetSet($sourceName, $source);
         return $this;
     }//end add()
 
@@ -94,7 +95,8 @@ class Sources implements \Iterator, \Countable, \ArrayAccess
         }
 
         $this->offsetUnset($sourceName);
-    }
+    }//end unset()
+
 
     /**
      * Return the current element
@@ -187,7 +189,8 @@ class Sources implements \Iterator, \Countable, \ArrayAccess
         if (false === is_string($offset)) {
             throw new \TypeError('Offset must be a string');
         }
-        $offset=$this->standardiseString($offset);
+
+        $offset = $this->standardiseString($offset);
         if (true === isset($this->sources[$offset])) {
             return true;
         } else {
@@ -209,7 +212,8 @@ class Sources implements \Iterator, \Countable, \ArrayAccess
         if (false === is_string($offset)) {
             throw new \TypeError('Offset must be a string');
         }
-        $offset=$this->standardiseString($offset);
+
+        $offset = $this->standardiseString($offset);
         if (true === isset($this->sources[$offset])) {
             return $this->sources[$offset];
         } else {
@@ -226,6 +230,7 @@ class Sources implements \Iterator, \Countable, \ArrayAccess
      *
      * @return void
      * @throws \TypeError If offset is not an string or value is not array or callable.
+     * @throws \BadMethodCallException If source name is replicated.
      */
     public function offsetSet($offset, $value)
     {
@@ -233,10 +238,12 @@ class Sources implements \Iterator, \Countable, \ArrayAccess
             $error = new \TypeError('Offset must be a string');
             throw $error;
         }
+
         $sourceName = $this->standardiseString($offset);
         if (true === isset($this->sources[$sourceName])) {
             throw new \BadMethodCallException('Duplicated source name '.$sourceName);
         }
+
         if (false === is_array($value) && false === is_callable($value)) {
             throw new \TypeError('Source must be an array or callable for '.$sourceName.': got '.gettype($value));
         }
@@ -259,9 +266,8 @@ class Sources implements \Iterator, \Countable, \ArrayAccess
         if (false === is_string($offset)) {
             throw new \TypeError('Offset must be a string');
         }
+
         $offset = $this->standardiseString($offset);
         unset($this->sources[$offset]);
     }//end offsetUnset()
-
-
-}
+}//end class

@@ -34,7 +34,7 @@ final class AsArray extends AsBase
      *
      * @var array
      */
-    public $of=[];
+    public $of = [];
     /**
      * Cast an value to a specific type.
      *
@@ -55,40 +55,52 @@ final class AsArray extends AsBase
         if (false === is_array($value)) {
             $value = [$value];
         }
+
         // now need to check the array contains appropriate values
-        if (false===empty($this->of)) {
-            $returned=[];
-            $validItems=[];
-            $invalidItems=[];
-            $count=0;
+        if (false === empty($this->of)) {
+            $returned     = [];
+            $validItems   = [];
+            $invalidItems = [];
+            $count        = 0;
             foreach ($value as $singleValue) {
-                $thisNew=null;
+                $thisNew = null;
                 /* @var AsBase $singleOf */
                 foreach ($this->of as $singleOf) {
-                    if (false===($singleOf instanceof AsBase)) {
+                    if (false === ($singleOf instanceof AsBase)) {
                         throw new \TypeError('Unrecognised cast type for array');
                     }
-                    $cast=$singleOf->cast($singleValue,null);
-                    if (null!==$cast && false===$singleOf->hasErrored()) {
-                        $thisNew=$cast;
+
+                    $cast = $singleOf->cast($singleValue, null);
+                    if (null !== $cast && false === $singleOf->hasErrored()) {
+                        $thisNew = $cast;
                         break;
                     }
                 }
-                if (null!==$thisNew) {
-                    $returned[]=$thisNew;
-                    $validItems[]=$count;
+
+                if (null !== $thisNew) {
+                    $returned[]   = $thisNew;
+                    $validItems[] = $count;
                 } else {
-                    $invalidItems[]=$count;
+                    $invalidItems[] = $count;
                 }
+
                 $count++;
-            }
-            if (count($returned)!==count($value)) {
-                $this->setError(self::ARRAY_CONTENTS_INVALID,['%validCount%'=>count($returned),'%totalCount%'=>count($value),'%validItemsList%'=>implode(',',$validItems),'%invalidItemsList%'=>implode(',',$invalidItems)]);
+            }//end foreach
+
+            if (count($returned) !== count($value)) {
+                $this->setError(
+                    self::ARRAY_CONTENTS_INVALID,
+                    ['%validCount%' => count($returned),
+                                 '%totalCount%' => count($value),
+                                 '%validItemsList%' => implode(',', $validItems),
+                                 '%invalidItemsList%' => implode(',', $invalidItems)]
+                );
                 return $defaultValue;
             } else {
-                $value=$returned;
+                $value = $returned;
             }
-        }
+        }//end if
+
         return $value;
     }//end doCast()
 }//end class

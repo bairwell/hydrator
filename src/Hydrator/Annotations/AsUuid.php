@@ -49,20 +49,27 @@ final class AsUuid extends AsBase
         }
 
         // remove dashes
-        $value = str_replace('-','',strtolower(strval($value)));
+        $value = str_replace('-', '', strtolower(strval($value)));
 
         // remove anything else
-        $replaced=preg_replace('/[^0-9a-f]/','',$value);
+        $replaced = preg_replace('/[^0-9a-f]/', '', $value);
 
-        if ($value!==$replaced) {
+        if ($value !== $replaced) {
             $this->setError(self::UUID_INVALID_CHARACTERS);
             return $defaultValue;
         }
-        if (32!==strlen($replaced)) {
+
+        if (32 !== strlen($replaced)) {
             $this->setError(self::UUID_WRONG_LENGTH);
             return $defaultValue;
         }
-        $value=substr($replaced,0,8).'-'.substr($replaced,8,4).'-'.substr($replaced,8+4,4).'-'.substr($replaced,8+4+4,4).'-'.substr($replaced,8+4+4+4,12);
+
+        // add the dashes in to the appropriate section.
+        $value = substr($replaced, 0, 8).
+                 '-'.substr($replaced, 8, 4).
+                 '-'.substr($replaced, (8 + 4), 4).
+                 '-'.substr($replaced, (8 + 4 + 4), 4).
+                 '-'.substr($replaced, (8 + 4 + 4 + 4), 12);
         return $value;
     }//end doCast()
 }//end class

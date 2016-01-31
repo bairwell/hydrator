@@ -52,18 +52,33 @@ class CachedProperty
     protected $from;
 
     /**
+     * Property modifiers integer.
+     *
+     * @var integer
+     */
+    protected $modifiers;
+
+    /**
      * CachedProperty constructor.
      *
-     * @param string        $className    Name of the class for this property.
-     * @param string        $propertyName Name of the property.
-     * @param From   $from         Where we are hydrating from.
+     * @param string      $className    Name of the class for this property.
+     * @param string      $propertyName Name of the property.
+     * @param From        $from         Where we are hydrating from.
+     * @param integer     $modifiers    The modifiers.
      * @param AsBase|null $castAs       Any cast setting.
      */
-    public function __construct(string $className, string $propertyName, From $from, AsBase $castAs = null)
+    public function __construct(
+        string $className,
+        string $propertyName,
+        From $from,
+        int $modifiers,
+        AsBase $castAs = null
+)
     {
         $this->setClassName($className);
         $this->setName($propertyName);
         $this->setCastAs($castAs);
+        $this->setModifiers($modifiers);
         $this->setFrom($from);
     }//end __construct()
 
@@ -184,4 +199,44 @@ class CachedProperty
 
         return $this;
     }//end setClassName()
+
+
+    /**
+     * Get the modifiers bitmask.
+     *
+     * @return integer
+     */
+    public function getModifiers() : int
+    {
+        return $this->modifiers;
+    }//end getModifiers()
+
+
+    /**
+     * Set the modifiers bitmask.
+     *
+     * @param integer $modifiers Set the modifiers bitmask.
+     *
+     * @return CachedProperty
+     */
+    public function setModifiers(int $modifiers) : self
+    {
+        $this->modifiers = $modifiers;
+
+        return $this;
+    }//end setModifiers()
+
+    /**
+     * Returns true if this is a public property.
+     *
+     * @return boolean
+     */
+    public function isPublic() : bool
+    {
+        if (($this->modifiers & \ReflectionProperty::IS_PUBLIC) === \ReflectionProperty::IS_PUBLIC) {
+            return true;
+        } else {
+            return false;
+        }
+    }//end isPublic()
 }//end class
