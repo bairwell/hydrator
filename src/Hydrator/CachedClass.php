@@ -203,13 +203,6 @@ class CachedClass implements \Iterator, \ArrayAccess, \Countable
     {
         $offset = $value->getName();
 
-        if ($value->getClassName() !== $this->className) {
-            throw new \TypeError(
-                'Cannot add property "'.$offset.'" for class '.
-                                 $value->getClassName().' to class '.$this->className
-            );
-        }
-
         if (false === isset($this->properties[$offset])) {
             $this->properties[$offset] = [];
         }

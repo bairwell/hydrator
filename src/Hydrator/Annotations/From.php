@@ -11,6 +11,7 @@
  * file that was distributed with this source code.
  */
 namespace Bairwell\Hydrator\Annotations;
+use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
  * Hydration system annotation.
