@@ -71,7 +71,7 @@ class CachedProperty
         string $className,
         string $propertyName,
         From $from,
-        int $modifiers,
+        int $modifiers=\ReflectionProperty::IS_PUBLIC,
         AsBase $castAs = null
 )
     {

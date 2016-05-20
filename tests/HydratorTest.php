@@ -65,10 +65,6 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->getValueFromProtected($sut, $reflected, 'cachePool'));
         $this->assertEquals($class, $this->getValueFromProtected($sut, $reflected, 'cacheKeyPrefix'));
         $this->assertEquals(3600, $this->getValueFromProtected($sut, $reflected, 'cacheExpiresAfter'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'conditionals'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'conditionals'));
     }
 
     /**
@@ -88,10 +84,6 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->getValueFromProtected($sut, $reflected, 'cachePool'));
         $this->assertEquals($class, $this->getValueFromProtected($sut, $reflected, 'cacheKeyPrefix'));
         $this->assertEquals(3600, $this->getValueFromProtected($sut, $reflected, 'cacheExpiresAfter'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'conditionals'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'conditionals'));
     }
 
     /**
@@ -111,10 +103,6 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->getValueFromProtected($sut, $reflected, 'cachePool'));
         $this->assertEquals($class, $this->getValueFromProtected($sut, $reflected, 'cacheKeyPrefix'));
         $this->assertEquals(3600, $this->getValueFromProtected($sut, $reflected, 'cacheExpiresAfter'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'conditionals'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'conditionals'));
     }
 
     /**
@@ -134,10 +122,6 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($cache, $this->getValueFromProtected($sut, $reflected, 'cachePool'));
         $this->assertEquals($class, $this->getValueFromProtected($sut, $reflected, 'cacheKeyPrefix'));
         $this->assertEquals(3600, $this->getValueFromProtected($sut, $reflected, 'cacheExpiresAfter'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'conditionals'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'conditionals'));
     }
 
     /**
@@ -156,10 +140,6 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->getValueFromProtected($sut, $reflected, 'cachePool'));
         $this->assertEquals('jeff', $this->getValueFromProtected($sut, $reflected, 'cacheKeyPrefix'));
         $this->assertEquals(3600, $this->getValueFromProtected($sut, $reflected, 'cacheExpiresAfter'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'conditionals'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'conditionals'));
     }
 
     /**
@@ -178,10 +158,6 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->getValueFromProtected($sut, $reflected, 'cachePool'));
         $this->assertEquals($class, $this->getValueFromProtected($sut, $reflected, 'cacheKeyPrefix'));
         $this->assertEquals(1234, $this->getValueFromProtected($sut, $reflected, 'cacheExpiresAfter'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'conditionals'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'conditionals'));
     }
 
     /**
@@ -203,163 +179,6 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($cache, $this->getValueFromProtected($sut, $reflected, 'cachePool'));
         $this->assertEquals('abc123', $this->getValueFromProtected($sut, $reflected, 'cacheKeyPrefix'));
         $this->assertEquals(567, $this->getValueFromProtected($sut, $reflected, 'cacheExpiresAfter'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'conditionals'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'conditionals'));
-    }
-
-    /**
-     * Test hydration sources.
-     *
-     * @test
-     * @uses   \Bairwell\Hydrator::__construct
-     * @uses   \Bairwell\Hydrator::standardiseString
-     * @covers \Bairwell\Hydrator::addHydrationSource
-     * @covers \Bairwell\Hydrator::unsetHydrationSource
-     * @covers \Bairwell\Hydrator::unsetAllHydrationSources
-     */
-    public function testHydrationSources()
-    {
-        $sut       = new Hydrator();
-        $reflected = new \ReflectionClass($sut);
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'sources'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'sources'));
-        $callable  = function () {
-        };
-        $callable2 = function () {
-        };
-        $this->assertSame($sut, $sut->addHydrationSource('first', $callable), 'Should be okay');
-        $sources = $this->getValueFromProtected($sut, $reflected, 'sources');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(1, $sources);
-        $this->assertArrayHasKey('first', $sources);
-        $this->assertSame($callable, $sources['first']);
-        $this->assertSame($sut, $sut->addHydrationSource(['second', 'third'], $callable2), 'Should be okay');
-        $sources = $this->getValueFromProtected($sut, $reflected, 'sources');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(3, $sources);
-        $this->assertArrayHasKey('first', $sources);
-        $this->assertSame($callable, $sources['first']);
-        $this->assertArrayHasKey('second', $sources);
-        $this->assertSame($callable2, $sources['second']);
-        $this->assertArrayHasKey('third', $sources);
-        $this->assertSame($callable2, $sources['third']);
-        try {
-            $sut->addHydrationSource(123, $callable);
-            $this->fail('Expected exception');
-        } catch (\TypeError $e) {
-            $this->assertEquals('SourceName must be a string or an array', $e->getMessage());
-        }
-        try {
-            $sut->addHydrationSource('first', $callable);
-            $this->fail('Expected exception');
-        } catch (\BadMethodCallException $e) {
-            $this->assertEquals('Duplicated source name first', $e->getMessage());
-        }
-
-        $this->assertEquals(2, $sut->unsetHydrationSource(['first', 'second']));
-        $sources = $this->getValueFromProtected($sut, $reflected, 'sources');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(1, $sources);
-        $this->assertArrayHasKey('third', $sources);
-        $this->assertSame($callable2, $sources['third']);
-        $this->assertEquals(1, $sut->unsetHydrationSource('third'));
-        $sources = $this->getValueFromProtected($sut, $reflected, 'sources');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(0, $sources);
-        $this->assertEquals(0, $sut->unsetHydrationSource('third'));
-        $this->assertSame($sut, $sut->addHydrationSource('first', $callable), 'Should be okay');
-        $this->assertSame($sut, $sut->addHydrationSource('second', $callable2), 'Should be okay');
-        $sources = $this->getValueFromProtected($sut, $reflected, 'sources');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(2, $sources);
-        try {
-            $sut->unsetHydrationSource(123);
-            $this->fail('Expected exception');
-        } catch (\TypeError $e) {
-            $this->assertEquals('SourceName must be a string or an array', $e->getMessage());
-        }
-        $this->assertEquals(2, $sut->unsetAllHydrationSources());
-        $sources = $this->getValueFromProtected($sut, $reflected, 'sources');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(0, $sources);
-    }
-
-    /**
-     * Test conditionals.
-     *
-     * @test
-     * @uses   \Bairwell\Hydrator::__construct
-     * @uses   \Bairwell\Hydrator::standardiseString
-     * @covers \Bairwell\Hydrator::addConditional
-     * @covers \Bairwell\Hydrator::unsetConditional
-     * @covers \Bairwell\Hydrator::unsetAllConditionals
-     */
-    public function testConditionals()
-    {
-        $sut       = new Hydrator();
-        $reflected = new \ReflectionClass($sut);
-        $this->assertInternalType('array', $this->getValueFromProtected($sut, $reflected, 'conditionals'));
-        $this->assertEmpty($this->getValueFromProtected($sut, $reflected, 'conditionals'));
-        $callable  = function () {
-        };
-        $callable2 = function () {
-        };
-        $this->assertSame($sut, $sut->addConditional('first', $callable), 'Should be okay');
-        $sources = $this->getValueFromProtected($sut, $reflected, 'conditionals');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(1, $sources);
-        $this->assertArrayHasKey('first', $sources);
-        $this->assertSame($callable, $sources['first']);
-        $this->assertSame($sut, $sut->addConditional(['second', 'third'], $callable2), 'Should be okay');
-        $sources = $this->getValueFromProtected($sut, $reflected, 'conditionals');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(3, $sources);
-        $this->assertArrayHasKey('first', $sources);
-        $this->assertSame($callable, $sources['first']);
-        $this->assertArrayHasKey('second', $sources);
-        $this->assertSame($callable2, $sources['second']);
-        $this->assertArrayHasKey('third', $sources);
-        $this->assertSame($callable2, $sources['third']);
-        try {
-            $sut->addConditional(123, $callable);
-            $this->fail('Expected exception');
-        } catch (\TypeError $e) {
-            $this->assertEquals('Name must be a string or an array', $e->getMessage());
-        }
-        try {
-            $sut->addConditional('first', $callable);
-            $this->fail('Expected exception');
-        } catch (\BadMethodCallException $e) {
-            $this->assertEquals('Duplicated conditional name first', $e->getMessage());
-        }
-        $this->assertEquals(2, $sut->unsetConditional(['first', 'second']));
-        $sources = $this->getValueFromProtected($sut, $reflected, 'conditionals');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(1, $sources);
-        $this->assertArrayHasKey('third', $sources);
-        $this->assertSame($callable2, $sources['third']);
-        $this->assertEquals(1, $sut->unsetConditional('third'));
-        $sources = $this->getValueFromProtected($sut, $reflected, 'conditionals');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(0, $sources);
-        $this->assertEquals(0, $sut->unsetConditional('third'));
-        $this->assertSame($sut, $sut->addConditional('first', $callable), 'Should be okay');
-        $this->assertSame($sut, $sut->addConditional('second', $callable2), 'Should be okay');
-        $sources = $this->getValueFromProtected($sut, $reflected, 'conditionals');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(2, $sources);
-        try {
-            $sut->unsetConditional(123);
-            $this->fail('Expected exception');
-        } catch (\TypeError $e) {
-            $this->assertEquals('Name must be a string or an array', $e->getMessage());
-        }
-        $this->assertEquals(2, $sut->unsetAllConditionals());
-        $sources = $this->getValueFromProtected($sut, $reflected, 'conditionals');
-        $this->assertInternalType('array', $sources);
-        $this->assertCount(0, $sources);
     }
 
     /**
@@ -451,87 +270,6 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
             $this->getValueFromProtected($sut, $reflected, 'annotationReader')
         );
         $this->assertSame($dummy, $this->getValueFromProtected($sut, $reflected, 'annotationReader'));
-    }
-
-    /**
-     * Test validation of conditions.
-     *
-     * @test
-     * @uses   \Bairwell\Hydrator::__construct
-     * @uses   \Bairwell\Hydrator::standardiseString
-     * @covers \Bairwell\Hydrator::validateConditions
-     */
-    public function testValidateConditions()
-    {
-        $sut       = new Hydrator();
-        $reflected = new \ReflectionClass($sut);
-        $method    = $reflected->getMethod('validateConditions');
-        $method->setAccessible(true);
-        //
-        $results = $method->invoke($sut, [], 'abc');
-        $this->assertInternalType('array', $results);
-        $this->assertEmpty($results);
-        // invalid string check
-        try {
-            $method->invoke($sut, [123], 'jeff');
-        } catch (AnnotationException $e) {
-            $this->assertEquals(
-                'Conditions must be an array of strings for jeff: encountered integer',
-                $e->getMessage()
-            );
-        }
-        // missing conditions
-        try {
-            $method->invoke($sut, ['aBc de!fG 123'], 'jeff');
-        } catch (AnnotationException $e) {
-            $this->assertEquals('Missing/unrecognised conditional "abcDefg123" in jeff', $e->getMessage());
-        }
-        $knownConditions = $reflected->getProperty('conditionals');
-        $knownConditions->setAccessible(true);
-        $knownConditions->setValue($sut, ['abc' => 'a', 'testerMcTest' => 'b', 'unUsed' => 'c']);
-        $results = $method->invoke($sut, ['AbC', 'teStEr mc Test'], 'thing');
-        $this->assertInternalType('array', $results);
-        $this->assertEquals(['abc', 'testerMcTest'], $results);
-    }
-
-    /**
-     * Test validation of sources.
-     *
-     * @test
-     * @uses   \Bairwell\Hydrator::__construct
-     * @uses   \Bairwell\Hydrator::standardiseString
-     * @covers \Bairwell\Hydrator::validateSources
-     */
-    public function testValidateSources()
-    {
-        $sut       = new Hydrator();
-        $reflected = new \ReflectionClass($sut);
-        $method    = $reflected->getMethod('validateSources');
-        $method->setAccessible(true);
-        // empty
-        try {
-            $method->invoke($sut, [], 'abc');
-        } catch (AnnotationException $e) {
-            $this->assertEquals('No source specified in annotation for abc', $e->getMessage());
-        }
-        // invalid string check
-        try {
-            $method->invoke($sut, [123], 'jeff');
-        } catch (AnnotationException $e) {
-            $this->assertEquals('Sources must be an array of strings for jeff: encountered integer', $e->getMessage());
-        }
-        // missing conditions
-        try {
-            $method->invoke($sut, ['aBc de!fG 123'], 'jeff');
-        } catch (AnnotationException $e) {
-            $this->assertEquals('Missing/unrecognised source "abcDefg123" in jeff', $e->getMessage());
-        }
-        $knownSources = $reflected->getProperty('sources');
-        $knownSources->setAccessible(true);
-        $knownSources->setValue($sut, ['abc' => 'a', 'testerMcTest' => 'b', 'unUsed' => 'c']);
-        $results = $method->invoke($sut, ['AbC', 'teStEr mc Test'], 'thing');
-        $this->assertInternalType('array', $results);
-        $this->assertEquals(['abc', 'testerMcTest'], $results);
     }
 
     /**
@@ -798,16 +536,17 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $sut       = new Hydrator(null, $annotationReader);
         $reflected = new \ReflectionClass($sut);
         // setup sources
-        $knownSources = $reflected->getProperty('sources');
-        $knownSources->setAccessible(true);
-        $knownSources->setValue($sut, ['header' => 'a', 'body' => 'b', 'unUsed' => 'c']);
+        $sources=new Hydrator\Sources();
+        $sources->add('header',['a']);
+        $sources->add('body',['b']);
+        $sources->add('unUsed',['c']);
         // setup conditions
-        $knownConditions = $reflected->getProperty('conditionals');
-        $knownConditions->setAccessible(true);
-        $knownConditions->setValue($sut, ['isjuly' => 'a', 'isnotseptember' => 'b']);
+        $conditionals=new Hydrator\Conditionals();
+        $conditionals->add('isjuly', function() { return 'a';});
+        $conditionals->add('isnotseptember',function() { return 'b';});
         $method = $reflected->getMethod('parseProperty');
         $method->setAccessible(true);
-        $result = $method->invoke($sut, $reflectionProperty, $cachedClass);
+        $result = $method->invoke($sut, $reflectionProperty, $cachedClass,$sources,$conditionals);
         $this->assertSame($cachedClass, $result);
         $this->assertArrayHasKey('myPropertyName', $cachedClass);
         $propertyArray = $cachedClass['myPropertyName'];
@@ -874,16 +613,17 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $sut       = new Hydrator(null, $annotationReader);
         $reflected = new \ReflectionClass($sut);
         // setup sources
-        $knownSources = $reflected->getProperty('sources');
-        $knownSources->setAccessible(true);
-        $knownSources->setValue($sut, ['header' => 'a', 'body' => 'b', 'unUsed' => 'c']);
+        $sources=new Hydrator\Sources();
+        $sources->add('header',['a']);
+        $sources->add('body',['b']);
+        $sources->add('unUsed',['c']);
         // setup conditions
-        $knownConditions = $reflected->getProperty('conditionals');
-        $knownConditions->setAccessible(true);
-        $knownConditions->setValue($sut, ['isjuly' => 'a', 'isnotseptember' => 'b']);
+        $conditionals=new Hydrator\Conditionals();
+        $conditionals->add('isjuly', function() { return 'a';});
+        $conditionals->add('isnotseptember',function() { return 'b';});
         $method = $reflected->getMethod('parseProperty');
         $method->setAccessible(true);
-        $result = $method->invoke($sut, $reflectionProperty, $cachedClass);
+        $result = $method->invoke($sut, $reflectionProperty, $cachedClass,$sources,$conditionals);
         $this->assertSame($cachedClass, $result);
         $this->assertArrayHasKey('myPropertyName', $cachedClass);
         $propertyArray = $cachedClass['myPropertyName'];
@@ -1213,7 +953,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = ['shouldbegreen'];
         $castAs           = new AsString();
-        $property         = new Hydrator\CachedProperty('testClassName', 'myPropertyName', $from, $castAs);
+        $property         = new Hydrator\CachedProperty('testClassName', 'myPropertyName', $from, \ReflectionProperty::IS_PUBLIC, $castAs);
         // setup hydrator
         $sut       = new Hydrator();
         $reflected = new \ReflectionClass($sut);
@@ -1304,7 +1044,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = ['shouldbegreen'];
         $castAs           = new AsString();
-        $property         = new Hydrator\CachedProperty('className', 'myPropertyName', $from, $castAs);
+        $property         = new Hydrator\CachedProperty('className', 'myPropertyName', $from, \ReflectionProperty::IS_PUBLIC, $castAs);
         // setup hydrator
         $sut       = new Hydrator();
         $reflected = new \ReflectionClass($sut);
@@ -1512,7 +1252,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = ['shouldbegreen'];
         $cast             = new Hydrator\Annotations\AsDateTime();
-        $property         = new Hydrator\CachedProperty('className', 'myPropertyName', $from, $cast);
+        $property         = new Hydrator\CachedProperty('className', 'myPropertyName', $from, \ReflectionProperty::IS_PUBLIC, $cast);
         // setup hydrator
         $sut       = new Hydrator();
         $reflected = new \ReflectionClass($sut);
@@ -1544,7 +1284,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         //
         $object  = new \stdClass();
         $failure = new Hydrator\FailureList();
-        $sut->hydrateSingleProperty($property, $object, $failure);
+        $sut->hydrateSingleProperty($property, $object, new Hydrator\Sources(),new Hydrator\Conditionals(),$failure);
         $this->assertTrue(property_exists($object, 'myPropertyName'));
         $this->assertInstanceOf('\DateTime', $object->myPropertyName, gettype($object->myPropertyName));
         $this->assertEquals(1420421760, $object->myPropertyName->format('U'));
@@ -1574,7 +1314,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $from->sources    = ['jeff', 'banks'];
         $from->conditions = ['shouldbegreen'];
         $cast             = new Hydrator\Annotations\AsDateTime();
-        $property         = new Hydrator\CachedProperty('className', 'myPropertyName', $from, $cast);
+        $property         = new Hydrator\CachedProperty('className', 'myPropertyName', $from, \ReflectionProperty::IS_PUBLIC, $cast);
         // setup hydrator
         $sut       = new Hydrator();
         $reflected = new \ReflectionClass($sut);
@@ -1775,7 +1515,8 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
                          );
 
         $sut = new Hydrator(null, $annotationReader);
-        $sut->addHydrationSource(
+        $sources=new Hydrator\Sources();
+        $sources->add(
             'dummySource',
             function ($a) {
                 return 'thingy';
@@ -1804,7 +1545,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $sut = new Hydrator();
         try {
             $a = 'abc';
-            $sut->hydrateObject($a);
+            $sut->hydrateObject($a,new Hydrator\Sources());
             $this->fail('Expected exception');
         } catch (\TypeError $e) {
             $this->assertEquals('Hydrate must be passed an object for hydration', $e->getMessage());
@@ -1829,7 +1570,8 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
     public function testHydrateObject()
     {
         $sut = new Hydrator();
-        $sut->addHydrationSource(
+        $sources=new Hydrator\Sources();
+        $sources->add(
             'dummySource',
             function ($fieldName) {
                 switch ($fieldName) {
@@ -1842,7 +1584,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
                 }
             }
         );
-        $sut->addHydrationSource(
+        $sources->add(
             'other',
             function ($fieldName) {
                 switch ($fieldName) {
@@ -1853,13 +1595,14 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
                 }
             }
         );
-        $sut->addConditional(
+        $conditions=new Hydrator\Conditionals();
+        $conditions->add(
             'sunrisen',
             function () {
                 return true;
             }
         );
-        $sut->addConditional(
+        $conditions->add(
             'moonrisen',
             function () {
                 return false;
@@ -1873,7 +1616,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $dummyFailure->setMessage('unittest made message');
         $dummyFailure->setSource('jeff');
         $failures->add($dummyFailure);
-        $failures = $sut->hydrateObject($mockedObject, $failures);
+        $failures = $sut->hydrateObject($mockedObject, $sources,$conditions,$failures);
         // check the failures
         $this->assertInstanceOf('\Bairwell\Hydrator\FailureList', $failures);
         $this->assertCount(1, $failures);
@@ -1887,8 +1630,8 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('correct', $mockedObject->testOther);
 
         // okay, now let's repeat that with the same object but different sources and conditions.
-        $sut->unsetAllHydrationSources();
-        $sut->addHydrationSource(
+        $sources=new Hydrator\Sources();
+        $sources->add(
             ['dummySource', 'other'],
             function ($fieldName) {
                 switch ($fieldName) {
@@ -1903,14 +1646,14 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
                 }
             }
         );
-        $sut->unsetConditional('moonrisen');
-        $sut->addConditional(
+        $conditions->unset('moonrisen');
+        $conditions->add(
             'moonrisen',
             function () {
                 return true;
             }
         );
-        $failures = $sut->hydrateObject($mockedObject, $failures);
+        $failures = $sut->hydrateObject($mockedObject, $sources,$conditions,$failures);
         // check the failures
         $this->assertInstanceOf('\Bairwell\Hydrator\FailureList', $failures);
         $this->assertCount(1, $failures);

@@ -36,7 +36,7 @@ class CachedPropertyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('testingName',$sut->getName());
         $this->assertSame($from,$sut->getFrom());
         $this->assertFalse($sut->hasCastAs());
-        $sut=new CachedProperty('test2Class','testing2Name',$from,$AsBase);
+        $sut=new CachedProperty('test2Class','testing2Name',$from,\ReflectionProperty::IS_PUBLIC,$AsBase);
         $this->assertEquals('test2Class',$sut->getClassName());
         $this->assertEquals('testing2Name',$sut->getName());
         $this->assertSame($from,$sut->getFrom());
@@ -67,7 +67,7 @@ class CachedPropertyTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($sut,$sut->setCastAs($AsBase));
         $this->assertTrue($sut->hasCastAs());
         $this->assertSame($AsBase,$sut->getCastAs());
-        $sut      = new CachedProperty('testClassName','testingName', $from,$AsBase);
+        $sut      = new CachedProperty('testClassName','testingName', $from,\ReflectionProperty::IS_PUBLIC,$AsBase);
         $this->assertTrue($sut->hasCastAs());
         $this->assertSame($AsBase,$sut->getCastAs());
     }

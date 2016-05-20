@@ -583,7 +583,7 @@ class Hydrator implements LoggerAwareInterface
             throw new \TypeError('Source must be an array or callable: got '.gettype($source));
         }
 
-        if (null !== $data) {
+        if (false === empty($data)) {
             $arrayStyles = $property->getFrom()->arrayStyles;
             if (false === empty($arrayStyles)) {
                 $data = $this->extractFromArray($data, $arrayStyles);

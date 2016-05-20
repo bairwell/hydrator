@@ -12,6 +12,8 @@ This is a PHP 7 [Composer](https://getcomposer.org/) compatible library for prov
 
 This code is currently ALPHA standard - it has had limited testing and is still under active development.
 
+UNIT TESTS ARE CURRENTLY BROKEN.
+
 ## Standards
 
 The following [PHP FIG](http://www.php-fig.org/psr/) standards should be followed:
