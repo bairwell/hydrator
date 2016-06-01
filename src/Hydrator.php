@@ -139,7 +139,7 @@ class Hydrator implements LoggerAwareInterface
         Sources $sources,
         Conditionals $conditionals = null,
         FailureList $failureList = null
-)
+    )
     {
         if (false === is_object($object)) {
             throw new \TypeError('Hydrate must be passed an object for hydration');
@@ -164,8 +164,8 @@ class Hydrator implements LoggerAwareInterface
 
         if (null !== $this->logger) {
             $this->logger->debug(
-                'Hydrator: {className} has {number] hydratable properties',
-                ['className' => get_class($object),'{number}' => count($cachedClass)]
+                'Hydrator: {className} has {number} hydratable properties',
+                ['className' => get_class($object),'number' => count($cachedClass)]
             );
         }
 
@@ -280,6 +280,10 @@ class Hydrator implements LoggerAwareInterface
 
         $currentValue = null;
         foreach ($annotationSources as $annotationSource) {
+            if (null!==$this->logger) {
+                $this->logger->debug('Attempting to hydrate {className}.{propertyName} from {annotationSource}.{fromField} : Current value "{currentValue}"',
+                    ['className'=>$className,'propertyName'=>$propertyName,'annotationSource'=>$annotationSource,'fromField'=>$fromField,'currentValue'=>(string)$currentValue]);
+            }
             $currentValue = $this->hydrateSinglePropertyViaSource(
                 $currentValue,
                 $sources[$annotationSource],
@@ -290,6 +294,7 @@ class Hydrator implements LoggerAwareInterface
             );
         }//end foreach
         if (null !== $currentValue) {
+            $this->logger->debug('Setting value of {className}.{propertyName} : {type} {value}',['className'=>$className,'propertyName'=>$propertyName,'value'=>(string)$currentValue,'type'=>gettype($currentValue)]);
             // only use reflection if necessary.
             if (true === $property->isPublic()) {
                 $object->$propertyName = $currentValue;
@@ -298,6 +303,8 @@ class Hydrator implements LoggerAwareInterface
                 $reflectedProperty->setAccessible(true);
                 $reflectedProperty->setValue($object, $currentValue);
             }
+        } else {
+            $this->logger->debug('No change in value for {className}.{propertyName}',['className'=>$className,'propertyName'=>$propertyName]);
         }//end if
 
         return $object;
@@ -374,12 +381,7 @@ class Hydrator implements LoggerAwareInterface
                 // @todo add validation of cast (especially important for arrays with nested casts)
                 $castAs = $anno;
             } elseif (true === ($anno instanceof From)) {
-                if (null !== $this->logger) {
-                    $this->logger->debug(
-                        'Hydrator: Found from: {sources}, conditions: {conditions}',
-                        ['sources' => $anno->sources,'conditions' => $anno->conditions]
-                    );
-                }
+
 
                 /* @var From $anno */
                 $anno->sources     = $this->validateSources(
@@ -468,8 +470,8 @@ class Hydrator implements LoggerAwareInterface
             if (false === isset($sources[$annotationSource])) {
                 throw new AnnotationException(
                     'Missing/unrecognised source "'.
-                                              $annotationSource.'" in '.
-                                              $propertyFullName
+                    $annotationSource.'" in '.
+                    $propertyFullName
                 );
             } else {
                 $returnSources[] = $annotationSource;
@@ -583,7 +585,11 @@ class Hydrator implements LoggerAwareInterface
             throw new \TypeError('Source must be an array or callable: got '.gettype($source));
         }
 
-        if (false === empty($data)) {
+        $isValid=true;
+        if (null===$data || (true===is_array($data) && 0===count($data))) {
+            $isValid=false;
+        }
+        if (true===$isValid) {
             $arrayStyles = $property->getFrom()->arrayStyles;
             if (false === empty($arrayStyles)) {
                 $data = $this->extractFromArray($data, $arrayStyles);
@@ -595,7 +601,7 @@ class Hydrator implements LoggerAwareInterface
                     $this->logger->debug(
                         'Hydrator: No cast setting for field {fromField}: {currentValue}',
                         ['fromField' => $fromField,
-                        'currentValue' => $currentValue]
+                            'currentValue' => $currentValue]
                     );
                 }
             } else {
@@ -613,7 +619,7 @@ class Hydrator implements LoggerAwareInterface
                         $this->logger->debug(
                             'Hydrator: Cast failed for field {fromField}: {currentValue}: {castErrorMessage}',
                             ['fromField' => $fromField,
-                             'currentValue' => $currentValue,'castErrorMessage' => $castAs->getErrorMessage()]
+                                'currentValue' => $currentValue,'castErrorMessage' => $castAs->getErrorMessage()]
                         );
                     }
                 } else {
