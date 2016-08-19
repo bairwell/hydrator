@@ -294,7 +294,7 @@ class Hydrator implements LoggerAwareInterface
             );
         }//end foreach
         if (null !== $currentValue) {
-            $this->logger->debug('Setting value of {className}.{propertyName} : {type} {value}',['className'=>$className,'propertyName'=>$propertyName,'type'=>gettype($currentValue)]);
+            $this->logger->debug('Setting value of {className}.{propertyName} : {type}',['className'=>$className,'propertyName'=>$propertyName,'type'=>gettype($currentValue)]);
             // only use reflection if necessary.
             if (true === $property->isPublic()) {
                 $object->$propertyName = $currentValue;

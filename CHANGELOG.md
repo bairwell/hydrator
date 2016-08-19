@@ -1,3 +1,4 @@
+2016-08-19: v0.6.3 Fixed minor bug with empty array data.
 2016-07-19: v0.6.2 Fixed minor bug with preassigned/default non-string values.
 2016-06-01: v0.6.1 Fixed minor issue related to "0" values replacing default settings. 
             Improved logs.

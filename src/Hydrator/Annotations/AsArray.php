@@ -57,7 +57,7 @@ final class AsArray extends AsBase
         }
 
         // now need to check the array contains appropriate values
-        if (false === empty($this->of)) {
+        if (0===count($this->of)) {
             $returned     = [];
             $validItems   = [];
             $invalidItems = [];
